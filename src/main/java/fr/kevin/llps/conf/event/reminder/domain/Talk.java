@@ -9,8 +9,6 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static javax.persistence.FetchType.LAZY;
-
 @EqualsAndHashCode
 @NoArgsConstructor
 @Getter
@@ -40,7 +38,7 @@ public class Talk implements Event {
     @Column(name = "date", nullable = false)
     private LocalDateTime date;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "speaker_id")
     private Speaker speaker;
 
