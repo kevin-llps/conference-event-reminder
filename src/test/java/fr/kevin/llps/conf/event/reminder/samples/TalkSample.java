@@ -1,5 +1,7 @@
 package fr.kevin.llps.conf.event.reminder.samples;
 
+import fr.kevin.llps.conf.event.reminder.api.rest.dto.SpeakerDto;
+import fr.kevin.llps.conf.event.reminder.api.rest.dto.TalkDto;
 import fr.kevin.llps.conf.event.reminder.domain.Speaker;
 import fr.kevin.llps.conf.event.reminder.domain.Talk;
 
@@ -17,7 +19,7 @@ public class TalkSample {
                 LocalDateTime.of(2022, 10, 13, 19, 45, 0),
                 speakerKevLps);
 
-        Talk chatbotsTalk = new Talk(
+        Talk chatBotsTalk = new Talk(
                 "Les chatbots",
                 "Les chatbots sont un peu partout aujourd'hui. Voyons le pourquoi du comment et réalisons-en un avec Google DialogFlow, pour aider nos chers formateurs à se libérer des questions les plus fréquentes.",
                 LocalDateTime.of(2022, 10, 13, 19, 0, 0),
@@ -25,7 +27,7 @@ public class TalkSample {
 
         Talk videoGamesTalk = new Talk(
                 "Mécanismes d'un bon jeu vidéo",
-                "Passionné de jeux vidéo ou juste curieux de comprendre pourquoi ton copain ou ta copine passe toute ses soirées devant son écran au lieu de venir regarder Top Chef avec toi ? Je te conseille de venir écouter cette conférence pour comprendre une partie des mystères qui entourent l’univers très vaste du jeu vidéo.",
+                "Passionné de jeux vidéo ou juste curieux de comprendre pourquoi ton copain ou ta copine passe toute ses soirées devant son écran au lieu de venir regarder Top Chef avec toi ? Je te conseille de venir écouter cette conférence pour comprendre une partie des mystères qui entourent l'univers très vaste du jeu vidéo.",
                 LocalDateTime.of(2022, 10, 13, 21, 0, 0),
                 new Speaker("iza", "elk"));
 
@@ -41,7 +43,9 @@ public class TalkSample {
                 LocalDateTime.of(2023, 2, 9, 19, 0, 0),
                 speakerKevLps);
 
-        return List.of(cognitoTalk, chatbotsTalk, videoGamesTalk, firstPartAwsLambdaTalk, secondPartAwsLambdaTalk);
+        return List.of(cognitoTalk, chatBotsTalk, videoGamesTalk, firstPartAwsLambdaTalk, secondPartAwsLambdaTalk);
     }
+
+
 
 }
