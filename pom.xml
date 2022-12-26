@@ -17,7 +17,7 @@
 
     <properties>
         <java.version>17</java.version>
-        <liquibase.version>4.17.2</liquibase.version>
+        <liquibase.version>4.18.0</liquibase.version>
         <lombok.version>1.18.24</lombok.version>
         <testcontainers.version>1.17.6</testcontainers.version>
         <spring-boot-maven-plugin.version>2.7.4</spring-boot-maven-plugin.version>
@@ -98,7 +98,7 @@
                 <version>${liquibase.version}</version>
                 <configuration>
                     <promptOnNonLocalDatabase>true</promptOnNonLocalDatabase>
-                    <changeLogFile>ledger-changelog.xml</changeLogFile>
+                    <changeLogFile>changelog.xml</changeLogFile>
                     <outputChangeLogFile>${project.basedir}/src/main/resources/liquibase-outputChangeLog.xml
                     </outputChangeLogFile>
                     <url>jdbc:mysql://localhost:3306/event</url>
