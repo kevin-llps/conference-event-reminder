@@ -1,5 +1,7 @@
 package fr.kevin.llps.conf.event.reminder.domain;
 
+import fr.kevin.llps.conf.event.reminder.csv.CsvEvent;
+import fr.kevin.llps.conf.event.reminder.utils.DateUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -7,6 +9,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -26,6 +29,27 @@ public class PracticeSession implements Event {
         this.description = description;
         this.date = date;
         this.speaker = speaker;
+    }
+
+    public static PracticeSession create(CsvEvent csvEvent) {
+        PracticeSession practiceSession = new PracticeSession(
+                csvEvent.getTitle(),
+                csvEvent.getDescription(),
+                DateUtils.mapToLocalDateTime(csvEvent.getDate(), csvEvent.getTime()),
+                Speaker.create(csvEvent.getSpeaker()));
+
+        List<PracticeSessionAttendee> practiceSessionAttendees = mapToPracticeSessionAttendees(csvEvent, practiceSession);
+
+        practiceSession.setPracticeSessionAttendees(practiceSessionAttendees);
+
+        return practiceSession;
+    }
+
+    private static List<PracticeSessionAttendee> mapToPracticeSessionAttendees(CsvEvent csvEvent, PracticeSession practiceSession) {
+        return Arrays.stream(csvEvent.getAttendees().split(","))
+                .map(Attendee::create)
+                .map(attendee -> new PracticeSessionAttendee(practiceSession, attendee))
+                .toList();
     }
 
     @Id

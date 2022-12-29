@@ -3,6 +3,8 @@ package fr.kevin.llps.conf.event.reminder.service;
 import fr.kevin.llps.conf.event.reminder.api.rest.dto.EventDto;
 import fr.kevin.llps.conf.event.reminder.api.rest.mapper.TalkMapper;
 import fr.kevin.llps.conf.event.reminder.csv.CsvEvent;
+import fr.kevin.llps.conf.event.reminder.domain.BBL;
+import fr.kevin.llps.conf.event.reminder.domain.PracticeSession;
 import fr.kevin.llps.conf.event.reminder.domain.Talk;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,14 +23,19 @@ import static fr.kevin.llps.conf.event.reminder.samples.TalkDtoSample.talkDtoLis
 import static fr.kevin.llps.conf.event.reminder.samples.TalkSample.talkList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class EventServiceTest {
 
     @Mock
     private TalkService talkService;
+
+    @Mock
+    private BBLService bblService;
+
+    @Mock
+    private PracticeSessionService practiceSessionService;
 
     @Mock
     private TalkMapper talkMapper;
@@ -38,6 +45,12 @@ class EventServiceTest {
 
     @Captor
     private ArgumentCaptor<List<Talk>> talkListCaptor;
+
+    @Captor
+    private ArgumentCaptor<List<BBL>> bblListCaptor;
+
+    @Captor
+    private ArgumentCaptor<List<PracticeSession>> practiceSessionListCaptor;
 
     @Test
     void shouldImportEvents() {
@@ -56,6 +69,9 @@ class EventServiceTest {
         eventService.importEvents(csvEvents);
 
         verify(talkService).importTalks(talkListCaptor.capture());
+        verify(bblService).importBBLs(bblListCaptor.capture());
+        verify(practiceSessionService).importPracticeSessions(practiceSessionListCaptor.capture());
+        verifyNoMoreInteractions(talkService, bblService, practiceSessionService);
 
         List<Talk> talks = talkListCaptor.getValue();
 
@@ -83,6 +99,38 @@ class EventServiceTest {
                                 "Deuxième partie de la présentation sur les lambdas AWS",
                                 LocalDateTime.of(2023, 2, 9, 19, 0, 0),
                                 "kevin", "llps"));
+
+        List<BBL> bblList = bblListCaptor.getValue();
+
+        assertThat(bblList).isNotNull()
+                .hasSize(1)
+                .extracting("title", "description", "date", "speaker.firstname", "speaker.lastname", "company")
+                .containsExactlyInAnyOrder(
+                        tuple("Git",
+                                "Présentation du fonctionnement de Git",
+                                LocalDateTime.of(2022, 9, 6, 12, 0, 0),
+                                "chris", "arr",
+                                "MadMax Corp"));
+
+        List<PracticeSession> practiceSessions = practiceSessionListCaptor.getValue();
+
+        assertThat(practiceSessions).isNotNull()
+                .hasSize(1)
+                .extracting("title", "description", "date", "speaker.firstname", "speaker.lastname")
+                .containsExactlyInAnyOrder(
+                        tuple("JEE",
+                                "Session pratique JEE",
+                                LocalDateTime.of(2023, 4, 11, 19, 0, 0),
+                                "kevin", "llps"));
+
+        assertThat(practiceSessions.get(0).getPracticeSessionAttendees()).isNotNull()
+                .hasSize(4)
+                .extracting("attendee.firstname", "attendee.lastname")
+                .containsExactlyInAnyOrder(
+                        tuple("jean", "dupont"),
+                        tuple("alex", "dubois"),
+                        tuple("julien", "arnaud"),
+                        tuple("mickael", "dupont"));
     }
 
     @Test

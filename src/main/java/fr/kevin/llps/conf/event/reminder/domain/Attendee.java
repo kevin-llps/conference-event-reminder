@@ -1,5 +1,6 @@
 package fr.kevin.llps.conf.event.reminder.domain;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import java.util.UUID;
 
 import static javax.persistence.CascadeType.ALL;
 
+@EqualsAndHashCode
 @NoArgsConstructor
 @Getter
 @Setter
@@ -20,6 +22,12 @@ public class Attendee {
     public Attendee(String firstname, String lastname) {
         this.firstname = firstname;
         this.lastname = lastname;
+    }
+
+    public static Attendee create(String attendee) {
+        String[] attendeeParts = attendee.split(" ", 2);
+
+        return new Attendee(attendeeParts[0], attendeeParts[1]);
     }
 
     @Id

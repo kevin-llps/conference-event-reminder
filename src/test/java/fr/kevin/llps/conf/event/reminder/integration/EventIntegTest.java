@@ -1,6 +1,11 @@
 package fr.kevin.llps.conf.event.reminder.integration;
 
+import fr.kevin.llps.conf.event.reminder.domain.BBL;
+import fr.kevin.llps.conf.event.reminder.domain.PracticeSession;
 import fr.kevin.llps.conf.event.reminder.domain.Talk;
+import fr.kevin.llps.conf.event.reminder.repository.AttendeeRepository;
+import fr.kevin.llps.conf.event.reminder.repository.BBLRepository;
+import fr.kevin.llps.conf.event.reminder.repository.PracticeSessionRepository;
 import fr.kevin.llps.conf.event.reminder.repository.TalkRepository;
 import fr.kevin.llps.conf.event.reminder.utils.DateUtils;
 import fr.kevin.llps.conf.event.reminder.utils.MySQLContainerTest;
@@ -16,6 +21,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,14 +49,27 @@ class EventIntegTest extends MySQLContainerTest {
     @Autowired
     private TalkRepository talkRepository;
 
+    @Autowired
+    private BBLRepository bblRepository;
+
+    @Autowired
+    private PracticeSessionRepository practiceSessionRepository;
+
+    @Autowired
+    private AttendeeRepository attendeeRepository;
+
     @MockBean
     private DateUtils dateUtils;
 
     @AfterEach
     void tearDown() {
         talkRepository.deleteAll();
+        bblRepository.deleteAll();
+        practiceSessionRepository.deleteAll();
+        attendeeRepository.deleteAll();
     }
 
+    @Transactional
     @Test
     void shouldImportEvents() throws Exception {
         ResourceLoader resourceLoader = new DefaultResourceLoader();
@@ -66,6 +85,8 @@ class EventIntegTest extends MySQLContainerTest {
                 .andExpect(status().isNoContent());
 
         List<Talk> talks = talkRepository.findAll();
+        List<BBL> bblList = bblRepository.findAll();
+        List<PracticeSession> practiceSessions = practiceSessionRepository.findAll();
 
         assertThat(talks).isNotNull()
                 .hasSize(5)
@@ -91,6 +112,34 @@ class EventIntegTest extends MySQLContainerTest {
                                 "Deuxième partie de la présentation sur les lambdas AWS",
                                 LocalDateTime.of(2023, 2, 9, 19, 0, 0),
                                 "kevin", "llps"));
+
+        assertThat(bblList).isNotNull()
+                .hasSize(1)
+                .extracting("title", "description", "date", "speaker.firstname", "speaker.lastname", "company")
+                .containsExactlyInAnyOrder(
+                        tuple("Git",
+                                "Présentation du fonctionnement de Git",
+                                LocalDateTime.of(2022, 9, 6, 12, 0, 0),
+                                "chris", "arr",
+                                "MadMax Corp"));
+
+        assertThat(practiceSessions).isNotNull()
+                .hasSize(1)
+                .extracting("title", "description", "date", "speaker.firstname", "speaker.lastname")
+                .containsExactlyInAnyOrder(
+                        tuple("JEE",
+                                "Session pratique JEE",
+                                LocalDateTime.of(2023, 4, 11, 19, 0, 0),
+                                "kevin", "llps"));
+
+        assertThat(practiceSessions.get(0).getPracticeSessionAttendees()).isNotNull()
+                .hasSize(4)
+                .extracting("attendee.firstname", "attendee.lastname")
+                .containsExactlyInAnyOrder(
+                        tuple("jean", "dupont"),
+                        tuple("alex", "dubois"),
+                        tuple("julien", "arnaud"),
+                        tuple("mickael", "dupont"));
     }
 
     @Test

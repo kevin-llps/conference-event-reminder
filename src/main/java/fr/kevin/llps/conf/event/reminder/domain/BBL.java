@@ -1,5 +1,7 @@
 package fr.kevin.llps.conf.event.reminder.domain;
 
+import fr.kevin.llps.conf.event.reminder.csv.CsvEvent;
+import fr.kevin.llps.conf.event.reminder.utils.DateUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,6 +26,15 @@ public class BBL implements Event {
         this.date = date;
         this.speaker = speaker;
         this.company = company;
+    }
+
+    public static BBL create(CsvEvent csvEvent) {
+        return new BBL(
+                csvEvent.getTitle(),
+                csvEvent.getDescription(),
+                DateUtils.mapToLocalDateTime(csvEvent.getDate(), csvEvent.getTime()),
+                Speaker.create(csvEvent.getSpeaker()),
+                csvEvent.getCompany());
     }
 
     @Id

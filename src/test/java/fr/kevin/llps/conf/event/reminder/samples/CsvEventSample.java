@@ -7,16 +7,7 @@ import java.util.List;
 public class CsvEventSample {
 
     public static List<CsvEvent> csvEventList() {
-        CsvEvent cognito = CsvEvent.builder()
-                .title("AWS Cognito")
-                .type("Talk")
-                .description("Après 2 ans à travailler sur la mise en place de cette solution au PMU, kevin llps nous présentera son retour d'expérience en détaillant les points forts et les points faibles de Cognito.")
-                .date("13/10/2022")
-                .time("19:45:00")
-                .speaker("kevin llps")
-                .attendees("")
-                .company("")
-                .build();
+        CsvEvent cognito = csvTalkEvent();
 
         CsvEvent chatBots = CsvEvent.builder()
                 .title("Les chatbots")
@@ -62,18 +53,41 @@ public class CsvEventSample {
                 .company("")
                 .build();
 
-        CsvEvent git = CsvEvent.builder()
+        CsvEvent git = csvBBLEvent();
+
+        CsvEvent jee = csvPracticeSessionEvent();
+
+        return List.of(cognito, chatBots, videoGames, firstPartAwsLambda, secondPartAwsLambda, git, jee);
+    }
+
+    public static CsvEvent csvTalkEvent() {
+        return CsvEvent.builder()
+                .title("AWS Cognito")
+                .type("Talk")
+                .description("Après 2 ans à travailler sur la mise en place de cette solution au PMU, kevin llps nous présentera son retour d'expérience en détaillant les points forts et les points faibles de Cognito.")
+                .date("13/10/2022")
+                .time("19:45:00")
+                .speaker("kevin llps")
+                .attendees("")
+                .company("")
+                .build();
+    }
+
+    public static CsvEvent csvBBLEvent() {
+        return CsvEvent.builder()
                 .title("Git")
                 .type("BBL")
                 .description("Présentation du fonctionnement de Git")
-                .date("10/02/2023")
+                .date("06/09/2022")
                 .time("12:00:00")
                 .speaker("chris arr")
                 .attendees("")
                 .company("MadMax Corp")
                 .build();
+    }
 
-        CsvEvent jee = CsvEvent.builder()
+    public static CsvEvent csvPracticeSessionEvent() {
+        return CsvEvent.builder()
                 .title("JEE")
                 .type("Session pratique")
                 .description("Session pratique JEE")
@@ -83,8 +97,6 @@ public class CsvEventSample {
                 .attendees("jean dupont,alex dubois,julien arnaud,mickael dupont")
                 .company("")
                 .build();
-
-        return List.of(cognito, chatBots, videoGames, firstPartAwsLambda, secondPartAwsLambda, git, jee);
     }
 
 }
