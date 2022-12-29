@@ -1,5 +1,7 @@
 package fr.kevin.llps.conf.event.reminder.service;
 
+import fr.kevin.llps.conf.event.reminder.api.rest.dto.EventDto;
+import fr.kevin.llps.conf.event.reminder.api.rest.mapper.TalkMapper;
 import fr.kevin.llps.conf.event.reminder.csv.CsvEvent;
 import fr.kevin.llps.conf.event.reminder.domain.Talk;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,7 @@ import java.util.List;
 public class EventService {
 
     private final TalkService talkService;
+    private final TalkMapper talkMapper;
 
     public void importEvents(List<CsvEvent> csvEvents) {
         List<CsvEvent> csvTalks = filterByTalk(csvEvents);
@@ -29,6 +32,12 @@ public class EventService {
         return csvTalks.stream()
                 .map(Talk::create)
                 .toList();
+    }
+
+    public List<EventDto> getUpcomingEvents() {
+        List<Talk> upcomingTalks = talkService.getUpcomingTalks();
+
+        return talkMapper.mapToDto(upcomingTalks);
     }
 
 }

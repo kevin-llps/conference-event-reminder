@@ -1,5 +1,6 @@
 package fr.kevin.llps.conf.event.reminder.samples;
 
+import fr.kevin.llps.conf.event.reminder.api.rest.dto.EventDto;
 import fr.kevin.llps.conf.event.reminder.api.rest.dto.SpeakerDto;
 import fr.kevin.llps.conf.event.reminder.api.rest.dto.TalkDto;
 
@@ -8,7 +9,7 @@ import java.util.List;
 
 public class TalkDtoSample {
 
-    public static List<TalkDto> talkDtoList() {
+    public static List<EventDto> talkDtoList() {
         SpeakerDto speakerKevLps = SpeakerDto.builder()
                 .firstname("kevin")
                 .lastname("llps")

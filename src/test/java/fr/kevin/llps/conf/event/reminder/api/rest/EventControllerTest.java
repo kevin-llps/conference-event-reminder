@@ -1,11 +1,8 @@
 package fr.kevin.llps.conf.event.reminder.api.rest;
 
-import fr.kevin.llps.conf.event.reminder.api.rest.mapper.TalkMapper;
 import fr.kevin.llps.conf.event.reminder.csv.CsvEvent;
-import fr.kevin.llps.conf.event.reminder.domain.Talk;
 import fr.kevin.llps.conf.event.reminder.service.EventFileParser;
 import fr.kevin.llps.conf.event.reminder.service.EventService;
-import fr.kevin.llps.conf.event.reminder.service.TalkService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +19,6 @@ import java.util.List;
 
 import static fr.kevin.llps.conf.event.reminder.samples.CsvEventSample.csvEventList;
 import static fr.kevin.llps.conf.event.reminder.samples.TalkDtoSample.talkDtoList;
-import static fr.kevin.llps.conf.event.reminder.samples.TalkSample.talkList;
 import static fr.kevin.llps.conf.event.reminder.utils.TestUtils.readResource;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -43,13 +39,7 @@ class EventControllerTest {
     private EventFileParser eventFileParser;
 
     @MockBean
-    private TalkService talkService;
-
-    @MockBean
     private EventService eventService;
-
-    @MockBean
-    private TalkMapper talkMapper;
 
     @Test
     void shouldImportEvents() throws Exception {
@@ -77,10 +67,7 @@ class EventControllerTest {
 
     @Test
     void shouldGetUpcomingEvents() throws Exception {
-        List<Talk> talks = talkList();
-
-        when(talkService.getUpcomingTalks()).thenReturn(talks);
-        when(talkMapper.mapToDto(talks)).thenReturn(talkDtoList());
+        when(eventService.getUpcomingEvents()).thenReturn(talkDtoList());
 
         mockMvc.perform(get("/events/upcoming"))
                 .andExpect(status().isOk())

@@ -1,7 +1,7 @@
 package fr.kevin.llps.conf.event.reminder.api.rest.mapper;
 
+import fr.kevin.llps.conf.event.reminder.api.rest.dto.EventDto;
 import fr.kevin.llps.conf.event.reminder.api.rest.dto.SpeakerDto;
-import fr.kevin.llps.conf.event.reminder.api.rest.dto.TalkDto;
 import fr.kevin.llps.conf.event.reminder.domain.Speaker;
 import fr.kevin.llps.conf.event.reminder.domain.Talk;
 import org.junit.jupiter.api.Test;
@@ -54,9 +54,9 @@ class TalkMapperTest {
         when(speakerMapper.mapToDto(speakerCharLcs)).thenReturn(speakerCharLcsDto);
         when(speakerMapper.mapToDto(speakerIzaElk)).thenReturn(speakerIzaElkDto);
 
-        List<TalkDto> talkDtoList = talkMapper.mapToDto(talks);
+        List<EventDto> eventDtoList = talkMapper.mapToDto(talks);
 
-        assertThat(talkDtoList).isNotNull()
+        assertThat(eventDtoList).isNotNull()
                 .hasSize(5)
                 .extracting("title", "description", "date", "speaker.firstname", "speaker.lastname")
                 .containsExactlyInAnyOrder(

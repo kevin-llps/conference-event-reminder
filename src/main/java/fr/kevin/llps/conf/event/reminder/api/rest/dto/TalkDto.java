@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class TalkDto {
+public class TalkDto implements EventDto {
 
     @JsonProperty("title")
     private final String title;
