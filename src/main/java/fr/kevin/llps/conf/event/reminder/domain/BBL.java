@@ -1,8 +1,5 @@
 package fr.kevin.llps.conf.event.reminder.domain;
 
-import fr.kevin.llps.conf.event.reminder.csv.CsvEvent;
-import fr.kevin.llps.conf.event.reminder.utils.DateUtils;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,34 +9,26 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
-import static fr.kevin.llps.conf.event.reminder.domain.EventType.TALK;
+import static fr.kevin.llps.conf.event.reminder.domain.EventType.BBL;
 
-@EqualsAndHashCode
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "talk")
-public class Talk implements Event {
+@Table(name = "bbl")
+public class BBL implements Event {
 
-    public Talk(String title, String description, LocalDateTime date, Speaker speaker) {
+    public BBL(String title, String description, LocalDateTime date, Speaker speaker, String company) {
         this.title = title;
         this.description = description;
         this.date = date;
         this.speaker = speaker;
-    }
-
-    public static Talk create(CsvEvent csvEvent) {
-        return new Talk(
-                csvEvent.getTitle(),
-                csvEvent.getDescription(),
-                DateUtils.mapToLocalDateTime(csvEvent.getDate(), csvEvent.getTime()),
-                Speaker.create(csvEvent.getSpeaker()));
+        this.company = company;
     }
 
     @Id
     @GeneratedValue
-    @Column(name = "talk_id", nullable = false, columnDefinition = "BINARY(16)")
+    @Column(name = "bbl_id", nullable = false, columnDefinition = "BINARY(16)")
     private UUID id;
 
     @Column(name = "title", nullable = false, columnDefinition = "VARCHAR(100)")
@@ -55,20 +44,24 @@ public class Talk implements Event {
     @JoinColumn(name = "speaker_id")
     private Speaker speaker;
 
+    @Column(name = "company", nullable = false, columnDefinition = "VARCHAR(100)")
+    private String company;
+
     @Override
     public String transformToCsv() {
-        return String.format("%s;%s;%s;%s;%s %s",
+        return String.format("%s;%s;%s;%s;%s %s;%s",
                 title,
                 description,
                 date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                 date.format(DateTimeFormatter.ofPattern("HH:mm:ss")),
                 speaker.getFirstname(),
-                speaker.getLastname());
+                speaker.getLastname(),
+                company);
     }
 
     @Override
     public String getEventType() {
-        return TALK;
+        return BBL;
     }
 
 }

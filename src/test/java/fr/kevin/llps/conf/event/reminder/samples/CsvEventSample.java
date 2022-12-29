@@ -14,6 +14,8 @@ public class CsvEventSample {
                 .date("13/10/2022")
                 .time("19:45:00")
                 .speaker("kevin llps")
+                .attendees("")
+                .company("")
                 .build();
 
         CsvEvent chatBots = CsvEvent.builder()
@@ -23,6 +25,8 @@ public class CsvEventSample {
                 .date("13/10/2022")
                 .time("19:00:00")
                 .speaker("charlie lcs")
+                .attendees("")
+                .company("")
                 .build();
 
         CsvEvent videoGames = CsvEvent.builder()
@@ -32,6 +36,8 @@ public class CsvEventSample {
                 .date("13/10/2022")
                 .time("21:00:00")
                 .speaker("iza elk")
+                .attendees("")
+                .company("")
                 .build();
 
         CsvEvent firstPartAwsLambda = CsvEvent.builder()
@@ -41,6 +47,8 @@ public class CsvEventSample {
                 .date("24/10/2022")
                 .time("19:00:00")
                 .speaker("kevin llps")
+                .attendees("")
+                .company("")
                 .build();
 
         CsvEvent secondPartAwsLambda = CsvEvent.builder()
@@ -50,9 +58,33 @@ public class CsvEventSample {
                 .date("09/02/2023")
                 .time("19:00:00")
                 .speaker("kevin llps")
+                .attendees("")
+                .company("")
                 .build();
 
-        return List.of(cognito, chatBots, videoGames, firstPartAwsLambda, secondPartAwsLambda);
+        CsvEvent git = CsvEvent.builder()
+                .title("Git")
+                .type("BBL")
+                .description("Présentation du fonctionnement de Git")
+                .date("10/02/2023")
+                .time("12:00:00")
+                .speaker("chris arr")
+                .attendees("")
+                .company("MadMax Corp")
+                .build();
+
+        CsvEvent jee = CsvEvent.builder()
+                .title("JEE")
+                .type("Session pratique")
+                .description("Session pratique JEE")
+                .date("11/04/2023")
+                .time("19:00:00")
+                .speaker("kevin llps")
+                .attendees("jean dupont,alex dubois,julien arnaud,mickael dupont")
+                .company("")
+                .build();
+
+        return List.of(cognito, chatBots, videoGames, firstPartAwsLambda, secondPartAwsLambda, git, jee);
     }
 
 }

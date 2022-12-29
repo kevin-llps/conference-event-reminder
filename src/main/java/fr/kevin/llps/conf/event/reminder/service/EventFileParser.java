@@ -16,7 +16,7 @@ import java.util.List;
 public class EventFileParser {
 
     private static final char DELIMITER = ';';
-    private static final String[] HEADERS = {"titre", "type", "description", "date", "heure", "conférencier"};
+    private static final String[] HEADERS = {"titre", "type", "description", "date", "heure", "conférencier", "participants", "entreprise"};
 
     public List<CsvEvent> parse(MultipartFile multipartFile) throws IOException {
         InputStream inputStream = multipartFile.getInputStream();
@@ -42,6 +42,8 @@ public class EventFileParser {
                 .date(csvRecord.get(HEADERS[3]))
                 .time(csvRecord.get(HEADERS[4]))
                 .speaker(csvRecord.get(HEADERS[5]))
+                .attendees(csvRecord.get(HEADERS[6]))
+                .company(csvRecord.get(HEADERS[7]))
                 .build();
     }
 

@@ -44,4 +44,10 @@ public class Speaker {
     @OneToMany(mappedBy = "speaker", cascade = ALL)
     private List<Talk> talks;
 
+    @OneToMany(mappedBy = "speaker", cascade = ALL)
+    private List<BBL> bbls;
+
+    @OneToMany(mappedBy = "speaker", cascade = ALL)
+    private List<PracticeSession> practiceSessions;
+
 }

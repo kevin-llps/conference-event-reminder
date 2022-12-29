@@ -15,5 +15,7 @@ public class CsvEvent {
     private final String date;
     private final String time;
     private final String speaker;
+    private final String attendees;
+    private final String company;
 
 }

@@ -1,8 +1,5 @@
 package fr.kevin.llps.conf.event.reminder.domain;
 
-import fr.kevin.llps.conf.event.reminder.csv.CsvEvent;
-import fr.kevin.llps.conf.event.reminder.utils.DateUtils;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,36 +7,30 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
-import static fr.kevin.llps.conf.event.reminder.domain.EventType.TALK;
+import static fr.kevin.llps.conf.event.reminder.domain.EventType.PRACTICE_SESSION;
+import static javax.persistence.CascadeType.ALL;
 
-@EqualsAndHashCode
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "talk")
-public class Talk implements Event {
+@Table(name = "practice_session")
+public class PracticeSession implements Event {
 
-    public Talk(String title, String description, LocalDateTime date, Speaker speaker) {
+    public PracticeSession(String title, String description, LocalDateTime date, Speaker speaker) {
         this.title = title;
         this.description = description;
         this.date = date;
         this.speaker = speaker;
     }
 
-    public static Talk create(CsvEvent csvEvent) {
-        return new Talk(
-                csvEvent.getTitle(),
-                csvEvent.getDescription(),
-                DateUtils.mapToLocalDateTime(csvEvent.getDate(), csvEvent.getTime()),
-                Speaker.create(csvEvent.getSpeaker()));
-    }
-
     @Id
     @GeneratedValue
-    @Column(name = "talk_id", nullable = false, columnDefinition = "BINARY(16)")
+    @Column(name = "practice_session_id", nullable = false, columnDefinition = "BINARY(16)")
     private UUID id;
 
     @Column(name = "title", nullable = false, columnDefinition = "VARCHAR(100)")
@@ -55,20 +46,31 @@ public class Talk implements Event {
     @JoinColumn(name = "speaker_id")
     private Speaker speaker;
 
+    @OneToMany(mappedBy = "practiceSession", cascade = ALL)
+    private List<PracticeSessionAttendee> practiceSessionAttendees;
+
     @Override
     public String transformToCsv() {
-        return String.format("%s;%s;%s;%s;%s %s",
+        return String.format("%s;%s;%s;%s;%s %s;%s",
                 title,
                 description,
                 date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                 date.format(DateTimeFormatter.ofPattern("HH:mm:ss")),
                 speaker.getFirstname(),
-                speaker.getLastname());
+                speaker.getLastname(),
+                getCsvAttendees());
+    }
+
+    private String getCsvAttendees() {
+        return practiceSessionAttendees.stream()
+                .map(PracticeSessionAttendee::getAttendee)
+                .map(Attendee::toString)
+                .collect(Collectors.joining(";"));
     }
 
     @Override
     public String getEventType() {
-        return TALK;
+        return PRACTICE_SESSION;
     }
 
 }

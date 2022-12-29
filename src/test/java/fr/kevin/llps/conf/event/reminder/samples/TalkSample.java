@@ -1,7 +1,5 @@
 package fr.kevin.llps.conf.event.reminder.samples;
 
-import fr.kevin.llps.conf.event.reminder.api.rest.dto.SpeakerDto;
-import fr.kevin.llps.conf.event.reminder.api.rest.dto.TalkDto;
 import fr.kevin.llps.conf.event.reminder.domain.Speaker;
 import fr.kevin.llps.conf.event.reminder.domain.Talk;
 
@@ -46,6 +44,12 @@ public class TalkSample {
         return List.of(cognitoTalk, chatBotsTalk, videoGamesTalk, firstPartAwsLambdaTalk, secondPartAwsLambdaTalk);
     }
 
-
+    public static Talk oneTalk() {
+        return new Talk(
+                "AWS Cognito",
+                "Après 2 ans à travailler sur la mise en place de cette solution au PMU, kevin llps nous présentera son retour d'expérience en détaillant les points forts et les points faibles de Cognito.",
+                LocalDateTime.of(2022, 10, 13, 19, 45, 0),
+                new Speaker("kevin", "llps"));
+    }
 
 }
