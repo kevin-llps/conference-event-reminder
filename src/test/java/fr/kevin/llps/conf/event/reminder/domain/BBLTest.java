@@ -30,12 +30,12 @@ class BBLTest {
         BBL bbl = oneBBL();
 
         String expectedCsv = """
-                Spring;
-                Présentation de Spring;
-                24/03/2023;
-                12:30:00;
-                kevin llps;
-                Rockstar Corp                
+                Git;
+                Présentation du fonctionnement de Git;
+                06/09/2022;
+                12:00:00;
+                chris arr;
+                MadMax Corp                
                 """;
 
         assertThat(bbl.transformToCsv()).isEqualToIgnoringNewLines(expectedCsv);

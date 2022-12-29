@@ -4,6 +4,7 @@ import fr.kevin.llps.conf.event.reminder.domain.Attendee;
 import fr.kevin.llps.conf.event.reminder.domain.PracticeSession;
 import fr.kevin.llps.conf.event.reminder.repository.AttendeeRepository;
 import fr.kevin.llps.conf.event.reminder.repository.PracticeSessionRepository;
+import fr.kevin.llps.conf.event.reminder.utils.DateUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,8 +14,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static fr.kevin.llps.conf.event.reminder.samples.PracticeSessionSample.practiceSessionList;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static fr.kevin.llps.conf.event.reminder.utils.TestUtils.DATE;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PracticeSessionServiceTest {
@@ -24,6 +26,9 @@ class PracticeSessionServiceTest {
 
     @Mock
     private AttendeeRepository attendeeRepository;
+
+    @Mock
+    private DateUtils dateUtils;
 
     @InjectMocks
     private PracticeSessionService practiceSessionService;
@@ -42,6 +47,20 @@ class PracticeSessionServiceTest {
         verify(attendeeRepository).saveAll(attendees);
         verify(practiceSessionRepository).saveAll(practiceSessions);
         verifyNoMoreInteractions(practiceSessionRepository);
+    }
+
+    @Test
+    void shouldGetUpcomingPracticeSessions() {
+        List<PracticeSession> expectedPracticeSessions = practiceSessionList();
+
+        when(dateUtils.getCurrentDate()).thenReturn(DATE);
+        when(practiceSessionRepository.findByDateLaterThan(DATE)).thenReturn(expectedPracticeSessions);
+
+        List<PracticeSession> upcomingPracticeSessions = practiceSessionService.getUpcomingPracticeSessions();
+
+        assertThat(upcomingPracticeSessions).containsExactlyInAnyOrderElementsOf(expectedPracticeSessions);
+
+        verifyNoMoreInteractions(dateUtils, practiceSessionRepository);
     }
 
 }

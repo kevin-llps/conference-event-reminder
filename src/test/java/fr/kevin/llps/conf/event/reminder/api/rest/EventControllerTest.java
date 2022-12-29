@@ -1,5 +1,6 @@
 package fr.kevin.llps.conf.event.reminder.api.rest;
 
+import fr.kevin.llps.conf.event.reminder.api.rest.dto.EventDto;
 import fr.kevin.llps.conf.event.reminder.csv.CsvEvent;
 import fr.kevin.llps.conf.event.reminder.service.EventFileParser;
 import fr.kevin.llps.conf.event.reminder.service.EventService;
@@ -15,9 +16,12 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static fr.kevin.llps.conf.event.reminder.samples.BBLDtoSample.oneBBLDto;
 import static fr.kevin.llps.conf.event.reminder.samples.CsvEventSample.csvEventList;
+import static fr.kevin.llps.conf.event.reminder.samples.PracticeSessionDtoSample.onePracticeSessionDto;
 import static fr.kevin.llps.conf.event.reminder.samples.TalkDtoSample.talkDtoList;
 import static fr.kevin.llps.conf.event.reminder.utils.TestUtils.readResource;
 import static org.mockito.Mockito.*;
@@ -67,7 +71,12 @@ class EventControllerTest {
 
     @Test
     void shouldGetUpcomingEvents() throws Exception {
-        when(eventService.getUpcomingEvents()).thenReturn(talkDtoList());
+        List<EventDto> eventDtoList = new ArrayList<>();
+        eventDtoList.addAll(talkDtoList());
+        eventDtoList.add(oneBBLDto());
+        eventDtoList.add(onePracticeSessionDto());
+
+        when(eventService.getUpcomingEvents()).thenReturn(eventDtoList);
 
         mockMvc.perform(get("/events/upcoming"))
                 .andExpect(status().isOk())

@@ -13,19 +13,11 @@ public class PracticeSessionSample {
     public static List<PracticeSession> practiceSessionList() {
         PracticeSession jee = onePracticeSession();
 
-        Attendee firstJeeAttendee = new Attendee("julien", "arnaud");
-        Attendee secondJeeAttendee = new Attendee("mickael", "dupont");
-
-        PracticeSessionAttendee firstJeePracticeSessionAttendee = new PracticeSessionAttendee(jee, firstJeeAttendee);
-        PracticeSessionAttendee secondJeePracticeSessionAttendee = new PracticeSessionAttendee(jee, secondJeeAttendee);
-
-        jee.setPracticeSessionAttendees(List.of(firstJeePracticeSessionAttendee, secondJeePracticeSessionAttendee));
-
         PracticeSession agile = new PracticeSession(
                 "Agile",
                 "Présentation et pratique de la méthode agile",
                 LocalDateTime.of(2022, 9, 20, 14, 30, 0),
-                new Speaker("kevin", "llps"));
+                new Speaker("chris", "arr"));
 
         Attendee firstAgileAttendee = new Attendee("jean", "dupont");
         Attendee secondAgileAttendee = new Attendee("alex", "dubois");
@@ -44,6 +36,14 @@ public class PracticeSessionSample {
                 "Session pratique JEE",
                 LocalDateTime.of(2023, 4, 11, 19, 0, 0),
                 new Speaker("kevin", "llps"));
+
+        Attendee firstJeeAttendee = new Attendee("julien", "arnaud");
+        Attendee secondJeeAttendee = new Attendee("mickael", "dupont");
+
+        PracticeSessionAttendee firstJeePracticeSessionAttendee = new PracticeSessionAttendee(practiceSession, firstJeeAttendee);
+        PracticeSessionAttendee secondJeePracticeSessionAttendee = new PracticeSessionAttendee(practiceSession, secondJeeAttendee);
+
+        practiceSession.setPracticeSessionAttendees(List.of(firstJeePracticeSessionAttendee, secondJeePracticeSessionAttendee));
 
         return practiceSession;
     }

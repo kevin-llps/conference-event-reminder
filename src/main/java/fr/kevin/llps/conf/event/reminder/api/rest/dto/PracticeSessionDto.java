@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class TalkDto implements EventDto {
+public class PracticeSessionDto implements EventDto{
 
     @JsonProperty("title")
     private final String title;
@@ -22,5 +22,8 @@ public class TalkDto implements EventDto {
 
     @JsonProperty("speaker")
     private final SpeakerDto speaker;
+
+    @JsonProperty("attendees")
+    private final List<AttendeeDto> attendees;
 
 }

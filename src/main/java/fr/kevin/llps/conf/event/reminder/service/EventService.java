@@ -1,6 +1,8 @@
 package fr.kevin.llps.conf.event.reminder.service;
 
 import fr.kevin.llps.conf.event.reminder.api.rest.dto.EventDto;
+import fr.kevin.llps.conf.event.reminder.api.rest.mapper.BBLMapper;
+import fr.kevin.llps.conf.event.reminder.api.rest.mapper.PracticeSessionMapper;
 import fr.kevin.llps.conf.event.reminder.api.rest.mapper.TalkMapper;
 import fr.kevin.llps.conf.event.reminder.csv.CsvEvent;
 import fr.kevin.llps.conf.event.reminder.domain.BBL;
@@ -10,8 +12,8 @@ import fr.kevin.llps.conf.event.reminder.domain.Talk;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +23,8 @@ public class EventService {
     private final BBLService bblService;
     private final PracticeSessionService practiceSessionService;
     private final TalkMapper talkMapper;
+    private final BBLMapper bblMapper;
+    private final PracticeSessionMapper practiceSessionMapper;
 
     public void importEvents(List<CsvEvent> csvEvents) {
         List<CsvEvent> csvTalks = filterByEventType(csvEvents, EventType.TALK);
@@ -57,9 +61,17 @@ public class EventService {
     }
 
     public List<EventDto> getUpcomingEvents() {
-        List<Talk> upcomingTalks = talkService.getUpcomingTalks();
+        List<EventDto> eventDtoList = new ArrayList<>();
 
-        return talkMapper.mapToDto(upcomingTalks);
+        List<Talk> upcomingTalks = talkService.getUpcomingTalks();
+        List<BBL> upcomingBBLs = bblService.getUpcomingBBLs();
+        List<PracticeSession> upcomingPracticeSessions = practiceSessionService.getUpcomingPracticeSessions();
+
+        eventDtoList.addAll(talkMapper.mapToDto(upcomingTalks));
+        eventDtoList.addAll(bblMapper.mapToDto(upcomingBBLs));
+        eventDtoList.addAll(practiceSessionMapper.mapToDto(upcomingPracticeSessions));
+
+        return eventDtoList;
     }
 
 }

@@ -1,8 +1,6 @@
 package fr.kevin.llps.conf.event.reminder.integration;
 
-import fr.kevin.llps.conf.event.reminder.domain.BBL;
-import fr.kevin.llps.conf.event.reminder.domain.PracticeSession;
-import fr.kevin.llps.conf.event.reminder.domain.Talk;
+import fr.kevin.llps.conf.event.reminder.domain.*;
 import fr.kevin.llps.conf.event.reminder.repository.AttendeeRepository;
 import fr.kevin.llps.conf.event.reminder.repository.BBLRepository;
 import fr.kevin.llps.conf.event.reminder.repository.PracticeSessionRepository;
@@ -26,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static fr.kevin.llps.conf.event.reminder.samples.BBLSample.oneBBL;
+import static fr.kevin.llps.conf.event.reminder.samples.PracticeSessionSample.onePracticeSession;
 import static fr.kevin.llps.conf.event.reminder.samples.TalkSample.talkList;
 import static fr.kevin.llps.conf.event.reminder.utils.TestUtils.DATE;
 import static fr.kevin.llps.conf.event.reminder.utils.TestUtils.readResource;
@@ -145,12 +145,24 @@ class EventIntegTest extends MySQLContainerTest {
     @Test
     void shouldGetUpcomingEvents() throws Exception {
         talkRepository.saveAll(talkList());
+        bblRepository.save(oneBBL());
+
+        PracticeSession practiceSession = onePracticeSession();
+
+        attendeeRepository.saveAll(getAttendees(practiceSession));
+        practiceSessionRepository.save(practiceSession);
 
         when(dateUtils.getCurrentDate()).thenReturn(DATE);
 
         mockMvc.perform(get("/events/upcoming"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(readResource(upcomingEvents)));
+    }
+
+    private List<Attendee> getAttendees(PracticeSession practiceSession) {
+        return practiceSession.getPracticeSessionAttendees().stream()
+                .map(PracticeSessionAttendee::getAttendee)
+                .toList();
     }
 
 }

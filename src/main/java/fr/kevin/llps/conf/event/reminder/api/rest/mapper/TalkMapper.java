@@ -1,6 +1,5 @@
 package fr.kevin.llps.conf.event.reminder.api.rest.mapper;
 
-import fr.kevin.llps.conf.event.reminder.api.rest.dto.EventDto;
 import fr.kevin.llps.conf.event.reminder.api.rest.dto.SpeakerDto;
 import fr.kevin.llps.conf.event.reminder.api.rest.dto.TalkDto;
 import fr.kevin.llps.conf.event.reminder.domain.Talk;
@@ -15,13 +14,13 @@ public class TalkMapper {
 
     private final SpeakerMapper speakerMapper;
 
-    public List<EventDto> mapToDto(List<Talk> talks) {
+    public List<TalkDto> mapToDto(List<Talk> talks) {
         return talks.stream()
                 .map(this::mapToDto)
                 .toList();
     }
 
-    private EventDto mapToDto(Talk talk) {
+    private TalkDto mapToDto(Talk talk) {
         SpeakerDto speakerDto = speakerMapper.mapToDto(talk.getSpeaker());
 
         return TalkDto.builder()

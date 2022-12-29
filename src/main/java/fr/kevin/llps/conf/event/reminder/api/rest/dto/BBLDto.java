@@ -5,11 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Builder
-public class TalkDto implements EventDto {
+public class BBLDto implements EventDto {
 
     @JsonProperty("title")
     private final String title;
@@ -22,5 +21,8 @@ public class TalkDto implements EventDto {
 
     @JsonProperty("speaker")
     private final SpeakerDto speaker;
+
+    @JsonProperty("company")
+    private final String company;
 
 }

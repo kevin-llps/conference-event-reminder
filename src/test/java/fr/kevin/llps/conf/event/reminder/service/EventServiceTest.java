@@ -1,6 +1,10 @@
 package fr.kevin.llps.conf.event.reminder.service;
 
+import fr.kevin.llps.conf.event.reminder.api.rest.dto.BBLDto;
 import fr.kevin.llps.conf.event.reminder.api.rest.dto.EventDto;
+import fr.kevin.llps.conf.event.reminder.api.rest.dto.PracticeSessionDto;
+import fr.kevin.llps.conf.event.reminder.api.rest.mapper.BBLMapper;
+import fr.kevin.llps.conf.event.reminder.api.rest.mapper.PracticeSessionMapper;
 import fr.kevin.llps.conf.event.reminder.api.rest.mapper.TalkMapper;
 import fr.kevin.llps.conf.event.reminder.csv.CsvEvent;
 import fr.kevin.llps.conf.event.reminder.domain.BBL;
@@ -18,7 +22,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static fr.kevin.llps.conf.event.reminder.samples.BBLDtoSample.oneBBLDto;
+import static fr.kevin.llps.conf.event.reminder.samples.BBLSample.oneBBL;
 import static fr.kevin.llps.conf.event.reminder.samples.CsvEventSample.csvEventList;
+import static fr.kevin.llps.conf.event.reminder.samples.PracticeSessionDtoSample.onePracticeSessionDto;
+import static fr.kevin.llps.conf.event.reminder.samples.PracticeSessionSample.onePracticeSession;
 import static fr.kevin.llps.conf.event.reminder.samples.TalkDtoSample.talkDtoList;
 import static fr.kevin.llps.conf.event.reminder.samples.TalkSample.talkList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,6 +47,12 @@ class EventServiceTest {
 
     @Mock
     private TalkMapper talkMapper;
+
+    @Mock
+    private BBLMapper bblMapper;
+
+    @Mock
+    private PracticeSessionMapper practiceSessionMapper;
 
     @InjectMocks
     private EventService eventService;
@@ -136,14 +150,21 @@ class EventServiceTest {
     @Test
     void shouldGetUpcomingEvents() {
         List<Talk> talks = talkList();
+        List<BBL> bblList = List.of(oneBBL());
+        List<PracticeSession> practiceSessions = List.of(onePracticeSession());
 
         when(talkService.getUpcomingTalks()).thenReturn(talks);
+        when(bblService.getUpcomingBBLs()).thenReturn(bblList);
+        when(practiceSessionService.getUpcomingPracticeSessions()).thenReturn(practiceSessions);
+
         when(talkMapper.mapToDto(talks)).thenReturn(talkDtoList());
+        when(bblMapper.mapToDto(bblList)).thenReturn(List.of(oneBBLDto()));
+        when(practiceSessionMapper.mapToDto(practiceSessions)).thenReturn(List.of(onePracticeSessionDto()));
 
         List<EventDto> upcomingEvents = eventService.getUpcomingEvents();
 
         assertThat(upcomingEvents).isNotNull()
-                .hasSize(5)
+                .hasSize(7)
                 .extracting("title", "description", "date", "speaker.firstname", "speaker.lastname")
                 .containsExactlyInAnyOrder(
                         tuple("AWS Cognito",
@@ -165,7 +186,28 @@ class EventServiceTest {
                         tuple("AWS Lambda - Partie 2",
                                 "Deuxième partie de la présentation sur les lambdas AWS",
                                 LocalDateTime.of(2023, 2, 9, 19, 0, 0),
+                                "kevin", "llps"),
+                        tuple("Git",
+                                "Présentation du fonctionnement de Git",
+                                LocalDateTime.of(2022, 9, 6, 12, 0, 0),
+                                "chris", "arr"),
+                        tuple("JEE",
+                                "Session pratique JEE",
+                                LocalDateTime.of(2023, 4, 11, 19, 0, 0),
                                 "kevin", "llps"));
+
+        BBLDto bblDto = (BBLDto) upcomingEvents.get(5);
+        assertThat(bblDto.getCompany()).isEqualTo("MadMax Corp");
+
+        PracticeSessionDto practiceSessionDto = (PracticeSessionDto) upcomingEvents.get(6);
+        assertThat(practiceSessionDto.getAttendees()).isNotNull()
+                .hasSize(2)
+                .extracting("firstname", "lastname")
+                .containsExactlyInAnyOrder(
+                        tuple("julien", "arnaud"),
+                        tuple("mickael", "dupont"));
+
+        verifyNoMoreInteractions(talkService, bblService, practiceSessionService, talkMapper, bblMapper, practiceSessionMapper);
     }
 
 }
