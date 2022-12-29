@@ -26,4 +26,11 @@ class DateUtilsTest {
         assertThat(currentDate).isEqualTo("2022-10-13T11:30:12");
     }
 
+    @Test
+    void shouldMapToLocalDateTime() {
+        LocalDateTime localDateTime = DateUtils.mapToLocalDateTime("13/10/2022", "11:30:12");
+
+        assertThat(localDateTime).isEqualTo(LocalDateTime.of(2022, 10, 13, 11, 30, 12, 0));
+    }
+
 }

@@ -24,6 +24,12 @@ public class Speaker {
         this.lastname = lastname;
     }
 
+    public static Speaker create(String speaker) {
+        String[] speakerParts = speaker.split(" ", 2);
+
+        return new Speaker(speakerParts[0], speakerParts[1]);
+    }
+
     @Id
     @GeneratedValue
     @Column(name = "speaker_id", nullable = false, columnDefinition = "BINARY(16)")

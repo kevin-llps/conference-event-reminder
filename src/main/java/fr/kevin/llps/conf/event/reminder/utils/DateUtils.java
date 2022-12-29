@@ -18,4 +18,16 @@ public class DateUtils {
         return LocalDateTime.now(clock).truncatedTo(SECONDS);
     }
 
+    public static LocalDateTime mapToLocalDateTime(String date, String time) {
+        return LocalDateTime.parse(mapToLocalDateTimeString(date, time));
+    }
+
+    private static String mapToLocalDateTimeString(String date, String time) {
+        String[] dateParts = date.split("/");
+
+        String localDate = String.join("-", dateParts[2], dateParts[1], dateParts[0]);
+
+        return localDate + "T" + time;
+    }
+
 }

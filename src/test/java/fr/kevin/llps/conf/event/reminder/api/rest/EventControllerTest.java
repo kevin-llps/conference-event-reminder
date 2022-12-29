@@ -1,8 +1,10 @@
 package fr.kevin.llps.conf.event.reminder.api.rest;
 
 import fr.kevin.llps.conf.event.reminder.api.rest.mapper.TalkMapper;
+import fr.kevin.llps.conf.event.reminder.csv.CsvEvent;
 import fr.kevin.llps.conf.event.reminder.domain.Talk;
-import fr.kevin.llps.conf.event.reminder.service.TalkFileParser;
+import fr.kevin.llps.conf.event.reminder.service.EventFileParser;
+import fr.kevin.llps.conf.event.reminder.service.EventService;
 import fr.kevin.llps.conf.event.reminder.service.TalkService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static fr.kevin.llps.conf.event.reminder.samples.CsvEventSample.csvEventList;
 import static fr.kevin.llps.conf.event.reminder.samples.TalkDtoSample.talkDtoList;
 import static fr.kevin.llps.conf.event.reminder.samples.TalkSample.talkList;
 import static fr.kevin.llps.conf.event.reminder.utils.TestUtils.readResource;
@@ -37,10 +40,13 @@ class EventControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private TalkFileParser talkFileParser;
+    private EventFileParser eventFileParser;
 
     @MockBean
     private TalkService talkService;
+
+    @MockBean
+    private EventService eventService;
 
     @MockBean
     private TalkMapper talkMapper;
@@ -50,23 +56,23 @@ class EventControllerTest {
         ResourceLoader resourceLoader = new DefaultResourceLoader();
         Resource resource = resourceLoader.getResource("classpath:/csv/events.csv");
 
-        List<Talk> talks = talkList();
+        List<CsvEvent> csvEvents = csvEventList();
 
         MockMultipartFile fileToImport = new MockMultipartFile("file",
                 "events.csv",
                 MediaType.TEXT_PLAIN_VALUE,
                 resource.getInputStream());
 
-        when(talkFileParser.parse(fileToImport)).thenReturn(talks);
-        doNothing().when(talkService).importTalks(talks);
+        when(eventFileParser.parse(fileToImport)).thenReturn(csvEvents);
+        doNothing().when(eventService).importEvents(csvEvents);
 
         mockMvc.perform(multipart("/events/import")
                         .file(fileToImport))
                 .andExpect(status().isNoContent());
 
-        verify(talkFileParser).parse(fileToImport);
-        verify(talkService).importTalks(talks);
-        verifyNoMoreInteractions(talkFileParser, talkService);
+        verify(eventFileParser).parse(fileToImport);
+        verify(eventService).importEvents(csvEvents);
+        verifyNoMoreInteractions(eventFileParser, eventService);
     }
 
     @Test

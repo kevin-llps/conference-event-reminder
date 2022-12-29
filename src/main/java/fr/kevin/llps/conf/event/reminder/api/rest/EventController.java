@@ -2,8 +2,10 @@ package fr.kevin.llps.conf.event.reminder.api.rest;
 
 import fr.kevin.llps.conf.event.reminder.api.rest.dto.TalkDto;
 import fr.kevin.llps.conf.event.reminder.api.rest.mapper.TalkMapper;
+import fr.kevin.llps.conf.event.reminder.csv.CsvEvent;
 import fr.kevin.llps.conf.event.reminder.domain.Talk;
-import fr.kevin.llps.conf.event.reminder.service.TalkFileParser;
+import fr.kevin.llps.conf.event.reminder.service.EventFileParser;
+import fr.kevin.llps.conf.event.reminder.service.EventService;
 import fr.kevin.llps.conf.event.reminder.service.TalkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -19,16 +21,17 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 @RequiredArgsConstructor
 public class EventController {
 
-    private final TalkFileParser talkFileParser;
+    private final EventFileParser eventFileParser;
     private final TalkService talkService;
+    private final EventService eventService;
     private final TalkMapper talkMapper;
 
     @PostMapping("/import")
     @ResponseStatus(NO_CONTENT)
     public void importEvents(@RequestParam("file") MultipartFile fileToImport) throws IOException {
-        List<Talk> talks = talkFileParser.parse(fileToImport);
+        List<CsvEvent> csvEvents = eventFileParser.parse(fileToImport);
 
-        talkService.importTalks(talks);
+        eventService.importEvents(csvEvents);
     }
 
     @GetMapping("/upcoming")

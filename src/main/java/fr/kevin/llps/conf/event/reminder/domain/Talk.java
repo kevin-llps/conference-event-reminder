@@ -1,5 +1,7 @@
 package fr.kevin.llps.conf.event.reminder.domain;
 
+import fr.kevin.llps.conf.event.reminder.csv.CsvEvent;
+import fr.kevin.llps.conf.event.reminder.utils.DateUtils;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +24,14 @@ public class Talk implements Event {
         this.description = description;
         this.date = date;
         this.speaker = speaker;
+    }
+
+    public static Talk create(CsvEvent csvEvent) {
+        return new Talk(
+                csvEvent.getTitle(),
+                csvEvent.getDescription(),
+                DateUtils.mapToLocalDateTime(csvEvent.getDate(), csvEvent.getTime()),
+                Speaker.create(csvEvent.getSpeaker()));
     }
 
     @Id
