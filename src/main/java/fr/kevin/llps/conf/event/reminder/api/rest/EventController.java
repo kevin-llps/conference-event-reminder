@@ -5,12 +5,17 @@ import fr.kevin.llps.conf.event.reminder.csv.CsvEvent;
 import fr.kevin.llps.conf.event.reminder.service.EventFileParser;
 import fr.kevin.llps.conf.event.reminder.service.EventService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
 
+import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @RestController
@@ -32,6 +37,16 @@ public class EventController {
     @GetMapping("/upcoming")
     public List<EventDto> getUpcomingEvents() {
         return eventService.getUpcomingEvents();
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<Resource> exportEvents() {
+        InputStreamResource file = new InputStreamResource(eventService.exportEvents());
+
+        return ResponseEntity.ok()
+                .header(CONTENT_DISPOSITION, "attachment;filename=events.csv")
+                .contentType(MediaType.parseMediaType("text/csv;charset=UTF-8"))
+                .body(file);
     }
 
 }

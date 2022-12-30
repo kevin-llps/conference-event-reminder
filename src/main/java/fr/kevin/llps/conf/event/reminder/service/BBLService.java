@@ -26,4 +26,7 @@ public class BBLService {
         return bblRepository.findByDateLaterThan(currentDate);
     }
 
+    public List<BBL> getAll() {
+        return bblRepository.findAllOrderedByDate();
+    }
 }

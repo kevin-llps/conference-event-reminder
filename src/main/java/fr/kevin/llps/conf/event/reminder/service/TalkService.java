@@ -26,4 +26,8 @@ public class TalkService {
         return talkRepository.findByDateLaterThan(currentDate);
     }
 
+    public List<Talk> getAll() {
+        return talkRepository.findAllOrderedByDate();
+    }
+
 }

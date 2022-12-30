@@ -94,7 +94,7 @@ public class CsvEventSample {
                 .date("11/04/2023")
                 .time("19:00:00")
                 .speaker("kevin llps")
-                .attendees("jean dupont,alex dubois,julien arnaud,mickael dupont")
+                .attendees("julien arnaud,mickael dupont")
                 .company("")
                 .build();
     }

@@ -30,11 +30,11 @@ public class BBL implements Event {
 
     public static BBL create(CsvEvent csvEvent) {
         return new BBL(
-                csvEvent.getTitle(),
-                csvEvent.getDescription(),
-                DateUtils.mapToLocalDateTime(csvEvent.getDate(), csvEvent.getTime()),
-                Speaker.create(csvEvent.getSpeaker()),
-                csvEvent.getCompany());
+                csvEvent.title(),
+                csvEvent.description(),
+                DateUtils.mapToLocalDateTime(csvEvent.date(), csvEvent.time()),
+                Speaker.create(csvEvent.speaker()),
+                csvEvent.company());
     }
 
     @Id
@@ -59,15 +59,16 @@ public class BBL implements Event {
     private String company;
 
     @Override
-    public String transformToCsv() {
-        return String.format("%s;%s;%s;%s;%s %s;%s",
+    public String[] getCsvColumns() {
+        return new String[]{
                 title,
+                getEventType(),
                 description,
                 date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                 date.format(DateTimeFormatter.ofPattern("HH:mm:ss")),
-                speaker.getFirstname(),
-                speaker.getLastname(),
-                company);
+                String.format("%s %s", speaker.getFirstname(), speaker.getLastname()),
+                "",
+                company};
     }
 
     @Override

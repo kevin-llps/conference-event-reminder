@@ -63,4 +63,17 @@ class PracticeSessionServiceTest {
         verifyNoMoreInteractions(dateUtils, practiceSessionRepository);
     }
 
+    @Test
+    void shouldGetAll() {
+        List<PracticeSession> expectedPracticeSessions = practiceSessionList();
+
+        when(practiceSessionRepository.findAllOrderedByDate()).thenReturn(expectedPracticeSessions);
+
+        List<PracticeSession> practiceSessions = practiceSessionService.getAll();
+
+        assertThat(practiceSessions).containsExactlyInAnyOrderElementsOf(expectedPracticeSessions);
+
+        verifyNoMoreInteractions(practiceSessionRepository);
+    }
+
 }

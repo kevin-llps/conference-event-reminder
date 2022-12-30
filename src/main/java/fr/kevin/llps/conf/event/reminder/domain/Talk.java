@@ -31,10 +31,10 @@ public class Talk implements Event {
 
     public static Talk create(CsvEvent csvEvent) {
         return new Talk(
-                csvEvent.getTitle(),
-                csvEvent.getDescription(),
-                DateUtils.mapToLocalDateTime(csvEvent.getDate(), csvEvent.getTime()),
-                Speaker.create(csvEvent.getSpeaker()));
+                csvEvent.title(),
+                csvEvent.description(),
+                DateUtils.mapToLocalDateTime(csvEvent.date(), csvEvent.time()),
+                Speaker.create(csvEvent.speaker()));
     }
 
     @Id
@@ -56,14 +56,15 @@ public class Talk implements Event {
     private Speaker speaker;
 
     @Override
-    public String transformToCsv() {
-        return String.format("%s;%s;%s;%s;%s %s",
+    public String[] getCsvColumns() {
+        return new String[]{
                 title,
+                getEventType(),
                 description,
                 date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                 date.format(DateTimeFormatter.ofPattern("HH:mm:ss")),
-                speaker.getFirstname(),
-                speaker.getLastname());
+                String.format("%s %s", speaker.getFirstname(), speaker.getLastname()),
+                "", ""};
     }
 
     @Override

@@ -4,6 +4,7 @@ import fr.kevin.llps.conf.event.reminder.csv.CsvEvent;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static fr.kevin.llps.conf.event.reminder.samples.BBLSample.oneBBL;
 import static fr.kevin.llps.conf.event.reminder.samples.CsvEventSample.csvBBLEvent;
@@ -26,19 +27,20 @@ class BBLTest {
     }
 
     @Test
-    void shouldTransformToCsv() {
+    void shouldGetCsvColumns() {
         BBL bbl = oneBBL();
 
-        String expectedCsv = """
-                Git;
-                Présentation du fonctionnement de Git;
-                06/09/2022;
-                12:00:00;
-                chris arr;
-                MadMax Corp                
-                """;
+        List<String> expectedCsvColumns = List.of(
+                "Git",
+                "BBL",
+                "Présentation du fonctionnement de Git",
+                "06/09/2022",
+                "12:00:00",
+                "chris arr",
+                "",
+                "MadMax Corp");
 
-        assertThat(bbl.transformToCsv()).isEqualToIgnoringNewLines(expectedCsv);
+        assertThat(bbl.getCsvColumns()).containsExactlyElementsOf(expectedCsvColumns);
     }
 
 }

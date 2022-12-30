@@ -16,4 +16,7 @@ public interface BBLRepository extends JpaRepository<BBL, UUID> {
     @Query(value = "SELECT * FROM bbl b WHERE b.date >= :date ORDER BY b.date DESC", nativeQuery = true)
     List<BBL> findByDateLaterThan(@Param("date") LocalDateTime date);
 
+    @Query(value = "SELECT * FROM bbl b ORDER BY b.date", nativeQuery = true)
+    List<BBL> findAllOrderedByDate();
+
 }

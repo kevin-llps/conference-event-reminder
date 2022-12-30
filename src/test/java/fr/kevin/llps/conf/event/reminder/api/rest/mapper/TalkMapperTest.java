@@ -1,6 +1,5 @@
 package fr.kevin.llps.conf.event.reminder.api.rest.mapper;
 
-import fr.kevin.llps.conf.event.reminder.api.rest.dto.EventDto;
 import fr.kevin.llps.conf.event.reminder.api.rest.dto.SpeakerDto;
 import fr.kevin.llps.conf.event.reminder.api.rest.dto.TalkDto;
 import fr.kevin.llps.conf.event.reminder.domain.Speaker;

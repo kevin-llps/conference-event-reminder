@@ -16,4 +16,7 @@ public interface TalkRepository extends JpaRepository<Talk, UUID> {
     @Query(value = "SELECT * FROM talk t WHERE t.date >= :date ORDER BY t.date DESC", nativeQuery = true)
     List<Talk> findByDateLaterThan(@Param("date") LocalDateTime date);
 
+    @Query(value = "SELECT * FROM talk t ORDER BY t.date", nativeQuery = true)
+    List<Talk> findAllOrderedByDate();
+
 }

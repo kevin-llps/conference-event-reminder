@@ -46,4 +46,24 @@ class BBLRepositoryIntegTest extends MySQLContainerTest {
                                 "Rockstar Corp"));
     }
 
+    @Test
+    void shouldFindAllOrderedByDate() {
+        List<BBL> bblList = bblRepository.findAllOrderedByDate();
+
+        assertThat(bblList).isNotNull()
+                .hasSize(2)
+                .extracting("title", "description", "date", "speaker.firstname", "speaker.lastname", "company")
+                .containsExactlyInAnyOrder(
+                        tuple("Git",
+                                "Présentation du fonctionnement de Git",
+                                LocalDateTime.of(2022, 9, 6, 12, 0, 0),
+                                "chris", "arr",
+                                "MadMax Corp"),
+                        tuple("Spring",
+                                "Présentation de Spring",
+                                LocalDateTime.of(2023, 3, 24, 12, 30, 0),
+                                "kevin", "llps",
+                                "Rockstar Corp"));
+    }
+
 }

@@ -16,8 +16,8 @@ class SpeakerMapperTest {
 
         SpeakerDto speakerDto = speakerMapper.mapToDto(speaker);
 
-        assertThat(speakerDto.getFirstname()).isEqualTo(speaker.getFirstname());
-        assertThat(speakerDto.getLastname()).isEqualTo(speaker.getLastname());
+        assertThat(speakerDto.firstname()).isEqualTo(speaker.getFirstname());
+        assertThat(speakerDto.lastname()).isEqualTo(speaker.getLastname());
     }
 
 }

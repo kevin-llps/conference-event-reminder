@@ -17,7 +17,12 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +34,7 @@ import static fr.kevin.llps.conf.event.reminder.samples.PracticeSessionDtoSample
 import static fr.kevin.llps.conf.event.reminder.samples.PracticeSessionSample.onePracticeSession;
 import static fr.kevin.llps.conf.event.reminder.samples.TalkDtoSample.talkDtoList;
 import static fr.kevin.llps.conf.event.reminder.samples.TalkSample.talkList;
+import static fr.kevin.llps.conf.event.reminder.utils.TestUtils.readResource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.Mockito.*;
@@ -138,11 +144,9 @@ class EventServiceTest {
                                 "kevin", "llps"));
 
         assertThat(practiceSessions.get(0).getPracticeSessionAttendees()).isNotNull()
-                .hasSize(4)
+                .hasSize(2)
                 .extracting("attendee.firstname", "attendee.lastname")
                 .containsExactlyInAnyOrder(
-                        tuple("jean", "dupont"),
-                        tuple("alex", "dubois"),
                         tuple("julien", "arnaud"),
                         tuple("mickael", "dupont"));
     }
@@ -197,10 +201,10 @@ class EventServiceTest {
                                 "kevin", "llps"));
 
         BBLDto bblDto = (BBLDto) upcomingEvents.get(5);
-        assertThat(bblDto.getCompany()).isEqualTo("MadMax Corp");
+        assertThat(bblDto.company()).isEqualTo("MadMax Corp");
 
         PracticeSessionDto practiceSessionDto = (PracticeSessionDto) upcomingEvents.get(6);
-        assertThat(practiceSessionDto.getAttendees()).isNotNull()
+        assertThat(practiceSessionDto.attendees()).isNotNull()
                 .hasSize(2)
                 .extracting("firstname", "lastname")
                 .containsExactlyInAnyOrder(
@@ -208,6 +212,22 @@ class EventServiceTest {
                         tuple("mickael", "dupont"));
 
         verifyNoMoreInteractions(talkService, bblService, practiceSessionService, talkMapper, bblMapper, practiceSessionMapper);
+    }
+
+    @Test
+    void shouldExportEvents() throws IOException {
+        DefaultResourceLoader defaultResourceLoader = new DefaultResourceLoader();
+        Resource resource = defaultResourceLoader.getResource("classpath:/csv/events.csv");
+
+        when(talkService.getAll()).thenReturn(talkList());
+        when(bblService.getAll()).thenReturn(List.of(oneBBL()));
+        when(practiceSessionService.getAll()).thenReturn(List.of(onePracticeSession()));
+
+        ByteArrayInputStream byteArrayInputStream = eventService.exportEvents();
+
+        String exportedEvents = new String(byteArrayInputStream.readAllBytes(), StandardCharsets.UTF_8);
+
+        assertThat(exportedEvents).isEqualToIgnoringNewLines(readResource(resource));
     }
 
 }

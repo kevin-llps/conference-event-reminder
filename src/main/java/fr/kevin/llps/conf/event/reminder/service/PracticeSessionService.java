@@ -40,4 +40,7 @@ public class PracticeSessionService {
         return practiceSessionRepository.findByDateLaterThan(currentDate);
     }
 
+    public List<PracticeSession> getAll() {
+        return practiceSessionRepository.findAllOrderedByDate();
+    }
 }

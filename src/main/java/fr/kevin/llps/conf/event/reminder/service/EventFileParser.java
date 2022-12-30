@@ -12,11 +12,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import static fr.kevin.llps.conf.event.reminder.csv.CsvProperties.DELIMITER;
+import static fr.kevin.llps.conf.event.reminder.csv.CsvProperties.HEADERS;
+
 @Service
 public class EventFileParser {
-
-    private static final char DELIMITER = ';';
-    private static final String[] HEADERS = {"titre", "type", "description", "date", "heure", "conférencier", "participants", "entreprise"};
 
     public List<CsvEvent> parse(MultipartFile multipartFile) throws IOException {
         InputStream inputStream = multipartFile.getInputStream();
@@ -29,6 +29,7 @@ public class EventFileParser {
 
         try (CSVParser parser = new CSVParser(inputStreamReader, csvFormat)) {
             return parser.stream()
+                    .filter(csvRecord -> csvRecord.size() == HEADERS.length)
                     .map(this::mapToCsvEvent)
                     .toList();
         }

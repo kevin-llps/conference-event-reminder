@@ -73,4 +73,37 @@ class PracticeSessionRepositoryIntegTest extends MySQLContainerTest {
                         tuple("mickael", "dupont"));
     }
 
+    @Transactional
+    @Test
+    void shouldFindAllOrderedByDate() {
+        List<PracticeSession> practiceSessions = practiceSessionRepository.findAllOrderedByDate();
+
+        assertThat(practiceSessions).isNotNull()
+                .hasSize(2)
+                .extracting("title", "description", "date", "speaker.firstname", "speaker.lastname")
+                .containsExactlyInAnyOrder(
+                        tuple("JEE",
+                                "Session pratique JEE",
+                                LocalDateTime.of(2023, 4, 11, 19, 0, 0),
+                                "kevin", "llps"),
+                        tuple("Agile",
+                                "Présentation et pratique de la méthode agile",
+                                LocalDateTime.of(2022, 9, 20, 14, 30, 0),
+                                "chris", "arr"));
+
+        assertThat(practiceSessions.get(0).getPracticeSessionAttendees()).isNotNull()
+                .hasSize(2)
+                .extracting("attendee.firstname", "attendee.lastname")
+                .containsExactlyInAnyOrder(
+                        tuple("jean", "dupont"),
+                        tuple("alex", "dubois"));
+
+        assertThat(practiceSessions.get(1).getPracticeSessionAttendees()).isNotNull()
+                .hasSize(2)
+                .extracting("attendee.firstname", "attendee.lastname")
+                .containsExactlyInAnyOrder(
+                        tuple("julien", "arnaud"),
+                        tuple("mickael", "dupont"));
+    }
+
 }

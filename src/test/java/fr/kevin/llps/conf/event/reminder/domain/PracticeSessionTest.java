@@ -28,33 +28,31 @@ class PracticeSessionTest {
 
         List<PracticeSessionAttendee> practiceSessionAttendees = practiceSession.getPracticeSessionAttendees();
         assertThat(practiceSessionAttendees).isNotNull()
-                .hasSize(4)
+                .hasSize(2)
                 .extracting("attendee.firstname", "attendee.lastname")
                 .containsExactlyInAnyOrder(
-                        tuple("jean", "dupont"),
-                        tuple("alex", "dubois"),
                         tuple("julien", "arnaud"),
                         tuple("mickael", "dupont"));
     }
 
     @Test
-    void shouldTransformToCsv() {
+    void shouldGetCsvColumns() {
         PracticeSession practiceSession = onePracticeSession();
         practiceSession.setPracticeSessionAttendees(List.of(
                 onePracticeSessionAttendee(practiceSession, new Attendee("Jean", "Dupont")),
                 onePracticeSessionAttendee(practiceSession, new Attendee("Adrien", "Legrand"))));
 
-        String expectedCsv = """
-                JEE;
-                Session pratique JEE;
-                11/04/2023;
-                19:00:00;
-                kevin llps;
-                Jean Dupont;
-                Adrien Legrand                
-                """;
+        List<String> expectedCsvColumns = List.of(
+                "JEE",
+                "Session pratique",
+                "Session pratique JEE",
+                "11/04/2023",
+                "19:00:00",
+                "kevin llps",
+                "Adrien Legrand,Jean Dupont",
+                "");
 
-        assertThat(practiceSession.transformToCsv()).isEqualToIgnoringNewLines(expectedCsv);
+        assertThat(practiceSession.getCsvColumns()).containsExactlyElementsOf(expectedCsvColumns);
     }
 
 }

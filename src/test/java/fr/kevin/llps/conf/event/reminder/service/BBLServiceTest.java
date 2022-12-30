@@ -52,4 +52,17 @@ class BBLServiceTest {
         verifyNoMoreInteractions(dateUtils, bblRepository);
     }
 
+    @Test
+    void shouldGetAll() {
+        List<BBL> expectedBBLs = bblList();
+
+        when(bblRepository.findAllOrderedByDate()).thenReturn(expectedBBLs);
+
+        List<BBL> bblList = bblService.getAll();
+
+        assertThat(bblList).containsExactlyInAnyOrderElementsOf(expectedBBLs);
+
+        verifyNoMoreInteractions(bblRepository);
+    }
+
 }

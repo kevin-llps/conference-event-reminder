@@ -40,6 +40,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class EventIntegTest extends MySQLContainerTest {
 
+    @Value("classpath:/csv/exportedEvents.csv")
+    private Resource exportedEvents;
+
     @Value("classpath:/json/upcomingEvents.json")
     private Resource upcomingEvents;
 
@@ -133,11 +136,9 @@ class EventIntegTest extends MySQLContainerTest {
                                 "kevin", "llps"));
 
         assertThat(practiceSessions.get(0).getPracticeSessionAttendees()).isNotNull()
-                .hasSize(4)
+                .hasSize(2)
                 .extracting("attendee.firstname", "attendee.lastname")
                 .containsExactlyInAnyOrder(
-                        tuple("jean", "dupont"),
-                        tuple("alex", "dubois"),
                         tuple("julien", "arnaud"),
                         tuple("mickael", "dupont"));
     }
@@ -157,6 +158,22 @@ class EventIntegTest extends MySQLContainerTest {
         mockMvc.perform(get("/events/upcoming"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(readResource(upcomingEvents)));
+    }
+
+    @Test
+    void shouldExportEvents() throws Exception {
+        talkRepository.saveAll(talkList());
+        bblRepository.save(oneBBL());
+
+        PracticeSession practiceSession = onePracticeSession();
+
+        attendeeRepository.saveAll(getAttendees(practiceSession));
+        practiceSessionRepository.save(practiceSession);
+
+        mockMvc.perform(get("/events/export"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/csv;charset=UTF-8"))
+                .andExpect(content().string(readResource(exportedEvents)));
     }
 
     private List<Attendee> getAttendees(PracticeSession practiceSession) {

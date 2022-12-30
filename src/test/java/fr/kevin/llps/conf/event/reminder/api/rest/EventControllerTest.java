@@ -9,13 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +32,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(EventController.class)
 class EventControllerTest {
 
+    @Value("classpath:/csv/events.csv")
+    private Resource events;
+
     @Value("classpath:/json/allEvents.json")
     private Resource upcomingEvents;
 
@@ -47,15 +49,12 @@ class EventControllerTest {
 
     @Test
     void shouldImportEvents() throws Exception {
-        ResourceLoader resourceLoader = new DefaultResourceLoader();
-        Resource resource = resourceLoader.getResource("classpath:/csv/events.csv");
-
         List<CsvEvent> csvEvents = csvEventList();
 
         MockMultipartFile fileToImport = new MockMultipartFile("file",
                 "events.csv",
                 MediaType.TEXT_PLAIN_VALUE,
-                resource.getInputStream());
+                events.getInputStream());
 
         when(eventFileParser.parse(fileToImport)).thenReturn(csvEvents);
         doNothing().when(eventService).importEvents(csvEvents);
@@ -81,6 +80,24 @@ class EventControllerTest {
         mockMvc.perform(get("/events/upcoming"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(readResource(upcomingEvents)));
+
+        verify(eventService).getUpcomingEvents();
+        verifyNoMoreInteractions(eventService);
+    }
+
+    @Test
+    void shouldExportEvents() throws Exception {
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(events.getInputStream().readAllBytes());
+
+        when(eventService.exportEvents()).thenReturn(byteArrayInputStream);
+
+        mockMvc.perform(get("/events/export"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/csv;charset=UTF-8"))
+                .andExpect(content().string(readResource(events)));
+
+        verify(eventService).exportEvents();
+        verifyNoMoreInteractions(eventService);
     }
 
 }

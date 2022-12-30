@@ -33,10 +33,10 @@ public class PracticeSession implements Event {
 
     public static PracticeSession create(CsvEvent csvEvent) {
         PracticeSession practiceSession = new PracticeSession(
-                csvEvent.getTitle(),
-                csvEvent.getDescription(),
-                DateUtils.mapToLocalDateTime(csvEvent.getDate(), csvEvent.getTime()),
-                Speaker.create(csvEvent.getSpeaker()));
+                csvEvent.title(),
+                csvEvent.description(),
+                DateUtils.mapToLocalDateTime(csvEvent.date(), csvEvent.time()),
+                Speaker.create(csvEvent.speaker()));
 
         List<PracticeSessionAttendee> practiceSessionAttendees = mapToPracticeSessionAttendees(csvEvent, practiceSession);
 
@@ -46,7 +46,7 @@ public class PracticeSession implements Event {
     }
 
     private static List<PracticeSessionAttendee> mapToPracticeSessionAttendees(CsvEvent csvEvent, PracticeSession practiceSession) {
-        return Arrays.stream(csvEvent.getAttendees().split(","))
+        return Arrays.stream(csvEvent.attendees().split(","))
                 .map(Attendee::create)
                 .map(attendee -> new PracticeSessionAttendee(practiceSession, attendee))
                 .toList();
@@ -74,22 +74,24 @@ public class PracticeSession implements Event {
     private List<PracticeSessionAttendee> practiceSessionAttendees;
 
     @Override
-    public String transformToCsv() {
-        return String.format("%s;%s;%s;%s;%s %s;%s",
+    public String[] getCsvColumns() {
+        return new String[]{
                 title,
+                getEventType(),
                 description,
                 date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                 date.format(DateTimeFormatter.ofPattern("HH:mm:ss")),
-                speaker.getFirstname(),
-                speaker.getLastname(),
-                getCsvAttendees());
+                String.format("%s %s", speaker.getFirstname(), speaker.getLastname()),
+                getCsvAttendees(),
+                ""};
     }
 
     private String getCsvAttendees() {
         return practiceSessionAttendees.stream()
                 .map(PracticeSessionAttendee::getAttendee)
                 .map(Attendee::toString)
-                .collect(Collectors.joining(";"));
+                .sorted()
+                .collect(Collectors.joining(","));
     }
 
     @Override

@@ -16,4 +16,7 @@ public interface PracticeSessionRepository extends JpaRepository<PracticeSession
     @Query(value = "SELECT * FROM practice_session ps WHERE ps.date >= :date ORDER BY ps.date DESC", nativeQuery = true)
     List<PracticeSession> findByDateLaterThan(@Param("date") LocalDateTime date);
 
+    @Query(value = "SELECT * FROM practice_session ps ORDER BY ps.date", nativeQuery = true)
+    List<PracticeSession> findAllOrderedByDate();
+
 }

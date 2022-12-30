@@ -52,4 +52,17 @@ class TalkServiceTest {
         verifyNoMoreInteractions(dateUtils, talkRepository);
     }
 
+    @Test
+    void shouldGetAll() {
+        List<Talk> expectedTalks = talkList();
+
+        when(talkRepository.findAllOrderedByDate()).thenReturn(expectedTalks);
+
+        List<Talk> talks = talkService.getAll();
+
+        assertThat(talks).containsExactlyInAnyOrderElementsOf(expectedTalks);
+
+        verifyNoMoreInteractions(talkRepository);
+    }
+
 }
