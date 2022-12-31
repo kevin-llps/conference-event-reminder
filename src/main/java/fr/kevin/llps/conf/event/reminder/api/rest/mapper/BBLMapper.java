@@ -14,7 +14,7 @@ public class BBLMapper {
 
     private final SpeakerMapper speakerMapper;
 
-    public List<BBLDto> mapToDto(List<BBL> bblList) {
+    public List<BBLDto> mapToDtoList(List<BBL> bblList) {
         return bblList.stream()
                 .map(this::mapToDto)
                 .toList();

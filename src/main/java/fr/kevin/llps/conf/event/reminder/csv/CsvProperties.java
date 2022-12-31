@@ -1,5 +1,10 @@
 package fr.kevin.llps.conf.event.reminder.csv;
 
+import lombok.NoArgsConstructor;
+
+import static lombok.AccessLevel.PRIVATE;
+
+@NoArgsConstructor(access = PRIVATE)
 public class CsvProperties {
 
     public static final char DELIMITER = ';';

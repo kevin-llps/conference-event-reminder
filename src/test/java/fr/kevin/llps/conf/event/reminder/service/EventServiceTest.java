@@ -74,17 +74,7 @@ class EventServiceTest {
 
     @Test
     void shouldImportEvents() {
-        CsvEvent csvEventDifferentFromTalk = CsvEvent.builder()
-                .title("Different from Talk")
-                .type("Different from Talk")
-                .description("Different from Talk")
-                .date("13/10/2022")
-                .time("22:00:00")
-                .speaker("kevin llps")
-                .build();
-
         List<CsvEvent> csvEvents = new ArrayList<>(csvEventList());
-        csvEvents.add(csvEventDifferentFromTalk);
 
         eventService.importEvents(csvEvents);
 
@@ -161,9 +151,9 @@ class EventServiceTest {
         when(bblService.getUpcomingBBLs()).thenReturn(bblList);
         when(practiceSessionService.getUpcomingPracticeSessions()).thenReturn(practiceSessions);
 
-        when(talkMapper.mapToDto(talks)).thenReturn(talkDtoList());
-        when(bblMapper.mapToDto(bblList)).thenReturn(List.of(oneBBLDto()));
-        when(practiceSessionMapper.mapToDto(practiceSessions)).thenReturn(List.of(onePracticeSessionDto()));
+        when(talkMapper.mapToDtoList(talks)).thenReturn(talkDtoList());
+        when(bblMapper.mapToDtoList(bblList)).thenReturn(List.of(oneBBLDto()));
+        when(practiceSessionMapper.mapToDtoList(practiceSessions)).thenReturn(List.of(onePracticeSessionDto()));
 
         List<EventDto> upcomingEvents = eventService.getUpcomingEvents();
 

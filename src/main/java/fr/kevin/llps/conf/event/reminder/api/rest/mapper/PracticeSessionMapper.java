@@ -18,7 +18,7 @@ public class PracticeSessionMapper {
     private final SpeakerMapper speakerMapper;
     private final AttendeeMapper attendeeMapper;
 
-    public List<PracticeSessionDto> mapToDto(List<PracticeSession> practiceSessions) {
+    public List<PracticeSessionDto> mapToDtoList(List<PracticeSession> practiceSessions) {
         return practiceSessions.stream()
                 .map(this::mapToDto)
                 .toList();
@@ -26,7 +26,7 @@ public class PracticeSessionMapper {
 
     private PracticeSessionDto mapToDto(PracticeSession practiceSession) {
         SpeakerDto speakerDto = speakerMapper.mapToDto(practiceSession.getSpeaker());
-        List<AttendeeDto> attendeeDtoList = attendeeMapper.mapToDto(getAttendees(practiceSession));
+        List<AttendeeDto> attendeeDtoList = attendeeMapper.mapToDtoList(getAttendees(practiceSession));
 
         return PracticeSessionDto.builder()
                 .title(practiceSession.getTitle())

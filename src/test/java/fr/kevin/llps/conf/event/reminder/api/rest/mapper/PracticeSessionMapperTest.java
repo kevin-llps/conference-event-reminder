@@ -33,7 +33,7 @@ class PracticeSessionMapperTest {
     private PracticeSessionMapper practiceSessionMapper;
 
     @Test
-    void shouldMapToDto() {
+    void shouldMapToDtoList() {
         List<PracticeSession> practiceSessions = practiceSessionList();
 
         Speaker speakerKevLps = new Speaker("kevin", "llps");
@@ -80,15 +80,15 @@ class PracticeSessionMapperTest {
 
         List<AttendeeDto> expectedAgileAttendees = List.of(firstAgileAttendeeDto, secondAgileAttendeeDto);
 
-        when(attendeeMapper.mapToDto(List.of(firstAgileAttendee, secondAgileAttendee)))
+        when(attendeeMapper.mapToDtoList(List.of(firstAgileAttendee, secondAgileAttendee)))
                 .thenReturn(expectedAgileAttendees);
 
         List<AttendeeDto> expectedJeeAttendees = List.of(firstJeeAttendeeDto, secondJeeAttendeeDto);
 
-        when(attendeeMapper.mapToDto(List.of(firstJeeAttendee, secondJeeAttendee)))
+        when(attendeeMapper.mapToDtoList(List.of(firstJeeAttendee, secondJeeAttendee)))
                 .thenReturn(expectedJeeAttendees);
 
-        List<PracticeSessionDto> practiceSessionDtoList = practiceSessionMapper.mapToDto(practiceSessions);
+        List<PracticeSessionDto> practiceSessionDtoList = practiceSessionMapper.mapToDtoList(practiceSessions);
 
         assertThat(practiceSessionDtoList).isNotNull()
                 .hasSize(2)

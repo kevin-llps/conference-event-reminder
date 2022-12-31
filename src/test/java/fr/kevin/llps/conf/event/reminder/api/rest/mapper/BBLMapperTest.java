@@ -28,7 +28,7 @@ class BBLMapperTest {
     private BBLMapper bblMapper;
 
     @Test
-    void shouldMapToDto() {
+    void shouldMapToDtoList() {
         List<BBL> bblList = bblList();
 
         Speaker speakerKevLps = new Speaker("kevin", "llps");
@@ -47,7 +47,7 @@ class BBLMapperTest {
         when(speakerMapper.mapToDto(speakerKevLps)).thenReturn(speakerKevLpsDto);
         when(speakerMapper.mapToDto(speakerChrisArr)).thenReturn(speakerChrisArrDto);
 
-        List<BBLDto> bblDtoList = bblMapper.mapToDto(bblList);
+        List<BBLDto> bblDtoList = bblMapper.mapToDtoList(bblList);
 
         assertThat(bblDtoList).isNotNull()
                 .hasSize(2)

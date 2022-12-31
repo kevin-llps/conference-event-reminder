@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class AttendeeMapperTest {
 
     @Test
-    void shouldMapToDto() {
+    void shouldMapToDtoList() {
         Attendee firstAttendee = new Attendee("julien", "arnaud");
         Attendee secondAttendee = new Attendee("mickael", "dupont");
 
@@ -29,7 +29,7 @@ class AttendeeMapperTest {
 
         AttendeeMapper attendeeMapper = new AttendeeMapper();
 
-        List<AttendeeDto> attendeeDtoList = attendeeMapper.mapToDto(List.of(firstAttendee, secondAttendee));
+        List<AttendeeDto> attendeeDtoList = attendeeMapper.mapToDtoList(List.of(firstAttendee, secondAttendee));
 
         assertThat(attendeeDtoList).isNotNull()
                 .hasSize(2)

@@ -28,7 +28,7 @@ class TalkMapperTest {
     private TalkMapper talkMapper;
 
     @Test
-    void shouldMapToDto() {
+    void shouldMapToDtoList() {
         List<Talk> talks = talkList();
 
         Speaker speakerKevLps = new Speaker("kevin", "llps");
@@ -54,7 +54,7 @@ class TalkMapperTest {
         when(speakerMapper.mapToDto(speakerCharLcs)).thenReturn(speakerCharLcsDto);
         when(speakerMapper.mapToDto(speakerIzaElk)).thenReturn(speakerIzaElkDto);
 
-        List<TalkDto> talkDtoList = talkMapper.mapToDto(talks);
+        List<TalkDto> talkDtoList = talkMapper.mapToDtoList(talks);
 
         assertThat(talkDtoList).isNotNull()
                 .hasSize(5)

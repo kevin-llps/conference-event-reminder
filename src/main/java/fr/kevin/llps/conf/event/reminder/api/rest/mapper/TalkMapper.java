@@ -14,7 +14,7 @@ public class TalkMapper {
 
     private final SpeakerMapper speakerMapper;
 
-    public List<TalkDto> mapToDto(List<Talk> talks) {
+    public List<TalkDto> mapToDtoList(List<Talk> talks) {
         return talks.stream()
                 .map(this::mapToDto)
                 .toList();

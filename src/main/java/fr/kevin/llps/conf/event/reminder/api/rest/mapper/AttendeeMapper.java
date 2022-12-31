@@ -9,7 +9,7 @@ import java.util.List;
 @Component
 public class AttendeeMapper {
 
-    public List<AttendeeDto> mapToDto(List<Attendee> attendees) {
+    public List<AttendeeDto> mapToDtoList(List<Attendee> attendees) {
         return attendees.stream()
                 .map(this::mapToDto)
                 .toList();

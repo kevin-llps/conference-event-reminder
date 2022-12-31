@@ -21,7 +21,6 @@ public abstract class MySQLContainerTest {
         MYSQL_CONTAINER.start();
     }
 
-    @SuppressWarnings("PMD.UnusedPrivateMethod")
     @DynamicPropertySource
     private static void mysqlProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", MYSQL_CONTAINER::getJdbcUrl);

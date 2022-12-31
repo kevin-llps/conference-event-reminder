@@ -77,9 +77,9 @@ public class EventService {
         List<BBL> upcomingBBLs = bblService.getUpcomingBBLs();
         List<PracticeSession> upcomingPracticeSessions = practiceSessionService.getUpcomingPracticeSessions();
 
-        eventDtoList.addAll(talkMapper.mapToDto(upcomingTalks));
-        eventDtoList.addAll(bblMapper.mapToDto(upcomingBBLs));
-        eventDtoList.addAll(practiceSessionMapper.mapToDto(upcomingPracticeSessions));
+        eventDtoList.addAll(talkMapper.mapToDtoList(upcomingTalks));
+        eventDtoList.addAll(bblMapper.mapToDtoList(upcomingBBLs));
+        eventDtoList.addAll(practiceSessionMapper.mapToDtoList(upcomingPracticeSessions));
 
         return eventDtoList;
     }
