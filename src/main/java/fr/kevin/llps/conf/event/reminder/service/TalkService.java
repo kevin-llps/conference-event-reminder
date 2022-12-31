@@ -1,6 +1,8 @@
 package fr.kevin.llps.conf.event.reminder.service;
 
 import fr.kevin.llps.conf.event.reminder.domain.Talk;
+import fr.kevin.llps.conf.event.reminder.entities.TalkEntity;
+import fr.kevin.llps.conf.event.reminder.mapper.TalkMapper;
 import fr.kevin.llps.conf.event.reminder.repository.TalkRepository;
 import fr.kevin.llps.conf.event.reminder.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
@@ -15,19 +17,24 @@ public class TalkService {
 
     private final TalkRepository talkRepository;
     private final DateUtils dateUtils;
+    private final TalkMapper talkMapper;
 
-    public void importTalks(List<Talk> talks) {
+    public void importTalks(List<TalkEntity> talks) {
         talkRepository.saveAll(talks);
     }
 
     public List<Talk> getUpcomingTalks() {
         LocalDateTime currentDate = dateUtils.getCurrentDate();
 
-        return talkRepository.findByDateLaterThan(currentDate);
+        List<TalkEntity> talkEntities = talkRepository.findByDateLaterThan(currentDate);
+
+        return talkMapper.mapToTalks(talkEntities);
     }
 
     public List<Talk> getAll() {
-        return talkRepository.findAllOrderedByDate();
+        List<TalkEntity> talkEntities = talkRepository.findAllOrderedByDate();
+
+        return talkMapper.mapToTalks(talkEntities);
     }
 
 }

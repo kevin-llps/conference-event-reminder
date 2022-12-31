@@ -1,4 +1,4 @@
-package fr.kevin.llps.conf.event.reminder.domain;
+package fr.kevin.llps.conf.event.reminder.entities;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,9 +12,9 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "practice_session_attendee")
-public class PracticeSessionAttendee {
+public class PracticeSessionAttendeeEntity {
 
-    public PracticeSessionAttendee(PracticeSession practiceSession, Attendee attendee) {
+    public PracticeSessionAttendeeEntity(PracticeSessionEntity practiceSession, AttendeeEntity attendee) {
         this.practiceSession = practiceSession;
         this.attendee = attendee;
     }
@@ -26,10 +26,10 @@ public class PracticeSessionAttendee {
 
     @ManyToOne
     @JoinColumn(name = "practice_session_id")
-    private PracticeSession practiceSession;
+    private PracticeSessionEntity practiceSession;
 
     @ManyToOne
     @JoinColumn(name = "attendee_id")
-    private Attendee attendee;
+    private AttendeeEntity attendee;
 
 }

@@ -2,11 +2,26 @@ package fr.kevin.llps.conf.event.reminder.samples;
 
 import fr.kevin.llps.conf.event.reminder.csv.CsvEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CsvEventSample {
 
     public static List<CsvEvent> csvEventList() {
+        List<CsvEvent> csvTalkEvents = csvTalkEvents();
+
+        CsvEvent git = csvBBLEvent();
+
+        CsvEvent jee = csvPracticeSessionEvent();
+
+        List<CsvEvent> csvEvents = new ArrayList<>(csvTalkEvents);
+        csvEvents.add(git);
+        csvEvents.add(jee);
+
+        return csvEvents;
+    }
+
+    public static List<CsvEvent> csvTalkEvents() {
         CsvEvent cognito = csvTalkEvent();
 
         CsvEvent chatBots = CsvEvent.builder()
@@ -53,11 +68,7 @@ public class CsvEventSample {
                 .company("")
                 .build();
 
-        CsvEvent git = csvBBLEvent();
-
-        CsvEvent jee = csvPracticeSessionEvent();
-
-        return List.of(cognito, chatBots, videoGames, firstPartAwsLambda, secondPartAwsLambda, git, jee);
+        return List.of(cognito, chatBots, videoGames, firstPartAwsLambda, secondPartAwsLambda);
     }
 
     public static CsvEvent csvTalkEvent() {
@@ -73,6 +84,23 @@ public class CsvEventSample {
                 .build();
     }
 
+    public static List<CsvEvent> csvBBLEvents() {
+        CsvEvent git = csvBBLEvent();
+
+        CsvEvent spring = CsvEvent.builder()
+                .title("Spring")
+                .type("BBL")
+                .description("Présentation de Spring")
+                .date("24/03/2023")
+                .time("12:30:00")
+                .speaker("kevin llps")
+                .attendees("")
+                .company("Rockstar Corp")
+                .build();
+
+        return List.of(git, spring);
+    }
+
     public static CsvEvent csvBBLEvent() {
         return CsvEvent.builder()
                 .title("Git")
@@ -84,6 +112,23 @@ public class CsvEventSample {
                 .attendees("")
                 .company("MadMax Corp")
                 .build();
+    }
+
+    public static List<CsvEvent> csvPracticeSessionEvents() {
+        CsvEvent jee = csvPracticeSessionEvent();
+
+        CsvEvent agile = CsvEvent.builder()
+                .title("Agile")
+                .type("Session pratique")
+                .description("Présentation et pratique de la méthode agile")
+                .date("20/09/2022")
+                .time("14:30:00")
+                .speaker("chris arr")
+                .attendees("jean dupont,alex dubois")
+                .company("")
+                .build();
+
+        return List.of(jee, agile);
     }
 
     public static CsvEvent csvPracticeSessionEvent() {

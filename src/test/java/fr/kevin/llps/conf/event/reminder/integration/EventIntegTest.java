@@ -1,6 +1,6 @@
 package fr.kevin.llps.conf.event.reminder.integration;
 
-import fr.kevin.llps.conf.event.reminder.domain.*;
+import fr.kevin.llps.conf.event.reminder.entities.*;
 import fr.kevin.llps.conf.event.reminder.repository.AttendeeRepository;
 import fr.kevin.llps.conf.event.reminder.repository.BBLRepository;
 import fr.kevin.llps.conf.event.reminder.repository.PracticeSessionRepository;
@@ -24,9 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static fr.kevin.llps.conf.event.reminder.samples.BBLSample.oneBBL;
-import static fr.kevin.llps.conf.event.reminder.samples.PracticeSessionSample.onePracticeSession;
-import static fr.kevin.llps.conf.event.reminder.samples.TalkSample.talkList;
+import static fr.kevin.llps.conf.event.reminder.samples.BBLEntitySample.oneBBLEntity;
+import static fr.kevin.llps.conf.event.reminder.samples.PracticeSessionEntitySample.onePracticeSessionEntity;
+import static fr.kevin.llps.conf.event.reminder.samples.TalkEntitySample.talkEntities;
 import static fr.kevin.llps.conf.event.reminder.utils.TestUtils.DATE;
 import static fr.kevin.llps.conf.event.reminder.utils.TestUtils.readResource;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -87,9 +87,9 @@ class EventIntegTest extends MySQLContainerTest {
                         .file(fileToImport))
                 .andExpect(status().isNoContent());
 
-        List<Talk> talks = talkRepository.findAll();
-        List<BBL> bblList = bblRepository.findAll();
-        List<PracticeSession> practiceSessions = practiceSessionRepository.findAll();
+        List<TalkEntity> talks = talkRepository.findAll();
+        List<BBLEntity> bblList = bblRepository.findAll();
+        List<PracticeSessionEntity> practiceSessions = practiceSessionRepository.findAll();
 
         assertThat(talks).isNotNull()
                 .hasSize(5)
@@ -145,10 +145,10 @@ class EventIntegTest extends MySQLContainerTest {
 
     @Test
     void shouldGetUpcomingEvents() throws Exception {
-        talkRepository.saveAll(talkList());
-        bblRepository.save(oneBBL());
+        talkRepository.saveAll(talkEntities());
+        bblRepository.save(oneBBLEntity());
 
-        PracticeSession practiceSession = onePracticeSession();
+        PracticeSessionEntity practiceSession = onePracticeSessionEntity();
 
         attendeeRepository.saveAll(getAttendees(practiceSession));
         practiceSessionRepository.save(practiceSession);
@@ -162,10 +162,10 @@ class EventIntegTest extends MySQLContainerTest {
 
     @Test
     void shouldExportEvents() throws Exception {
-        talkRepository.saveAll(talkList());
-        bblRepository.save(oneBBL());
+        talkRepository.saveAll(talkEntities());
+        bblRepository.save(oneBBLEntity());
 
-        PracticeSession practiceSession = onePracticeSession();
+        PracticeSessionEntity practiceSession = onePracticeSessionEntity();
 
         attendeeRepository.saveAll(getAttendees(practiceSession));
         practiceSessionRepository.save(practiceSession);
@@ -176,9 +176,9 @@ class EventIntegTest extends MySQLContainerTest {
                 .andExpect(content().string(readResource(exportedEvents)));
     }
 
-    private List<Attendee> getAttendees(PracticeSession practiceSession) {
+    private List<AttendeeEntity> getAttendees(PracticeSessionEntity practiceSession) {
         return practiceSession.getPracticeSessionAttendees().stream()
-                .map(PracticeSessionAttendee::getAttendee)
+                .map(PracticeSessionAttendeeEntity::getAttendee)
                 .toList();
     }
 

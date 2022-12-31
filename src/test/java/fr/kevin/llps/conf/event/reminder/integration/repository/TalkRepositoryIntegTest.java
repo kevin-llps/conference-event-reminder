@@ -1,6 +1,6 @@
 package fr.kevin.llps.conf.event.reminder.integration.repository;
 
-import fr.kevin.llps.conf.event.reminder.domain.Talk;
+import fr.kevin.llps.conf.event.reminder.entities.TalkEntity;
 import fr.kevin.llps.conf.event.reminder.repository.TalkRepository;
 import fr.kevin.llps.conf.event.reminder.utils.MySQLContainerTest;
 import org.junit.jupiter.api.AfterEach;
@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static fr.kevin.llps.conf.event.reminder.samples.TalkSample.talkList;
+import static fr.kevin.llps.conf.event.reminder.samples.TalkEntitySample.talkEntities;
 import static fr.kevin.llps.conf.event.reminder.utils.TestUtils.DATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -23,7 +23,7 @@ class TalkRepositoryIntegTest extends MySQLContainerTest {
 
     @BeforeEach
     void setUp() {
-        talkRepository.saveAll(talkList());
+        talkRepository.saveAll(talkEntities());
     }
 
     @AfterEach
@@ -33,9 +33,9 @@ class TalkRepositoryIntegTest extends MySQLContainerTest {
 
     @Test
     void shouldFindUpcomingTalks() {
-        List<Talk> talks = talkRepository.findByDateLaterThan(DATE);
+        List<TalkEntity> talkEntities = talkRepository.findByDateLaterThan(DATE);
 
-        assertThat(talks).isNotNull()
+        assertThat(talkEntities).isNotNull()
                 .hasSize(3)
                 .extracting("title", "description", "date", "speaker.firstname", "speaker.lastname")
                 .containsExactlyInAnyOrder(
@@ -55,9 +55,9 @@ class TalkRepositoryIntegTest extends MySQLContainerTest {
 
     @Test
     void shouldFindAllOrderedByDate() {
-        List<Talk> talks = talkRepository.findAllOrderedByDate();
+        List<TalkEntity> talkEntities = talkRepository.findAllOrderedByDate();
 
-        assertThat(talks).isNotNull()
+        assertThat(talkEntities).isNotNull()
                 .hasSize(5)
                 .extracting("title", "description", "date", "speaker.firstname", "speaker.lastname")
                 .containsExactlyInAnyOrder(

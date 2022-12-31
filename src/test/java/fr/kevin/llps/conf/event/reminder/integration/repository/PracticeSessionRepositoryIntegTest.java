@@ -1,8 +1,8 @@
 package fr.kevin.llps.conf.event.reminder.integration.repository;
 
-import fr.kevin.llps.conf.event.reminder.domain.Attendee;
-import fr.kevin.llps.conf.event.reminder.domain.PracticeSession;
-import fr.kevin.llps.conf.event.reminder.domain.PracticeSessionAttendee;
+import fr.kevin.llps.conf.event.reminder.entities.AttendeeEntity;
+import fr.kevin.llps.conf.event.reminder.entities.PracticeSessionAttendeeEntity;
+import fr.kevin.llps.conf.event.reminder.entities.PracticeSessionEntity;
 import fr.kevin.llps.conf.event.reminder.repository.AttendeeRepository;
 import fr.kevin.llps.conf.event.reminder.repository.PracticeSessionRepository;
 import fr.kevin.llps.conf.event.reminder.utils.MySQLContainerTest;
@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
-import static fr.kevin.llps.conf.event.reminder.samples.PracticeSessionSample.practiceSessionList;
+import static fr.kevin.llps.conf.event.reminder.samples.PracticeSessionEntitySample.practiceSessionEntities;
 import static fr.kevin.llps.conf.event.reminder.utils.TestUtils.DATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -31,17 +31,17 @@ class PracticeSessionRepositoryIntegTest extends MySQLContainerTest {
 
     @BeforeEach
     void setUp() {
-        List<PracticeSession> practiceSessions = practiceSessionList();
+        List<PracticeSessionEntity> practiceSessions = practiceSessionEntities();
 
         attendeeRepository.saveAll(getAttendees(practiceSessions));
         practiceSessionRepository.saveAll(practiceSessions);
     }
 
-    private List<Attendee> getAttendees(List<PracticeSession> practiceSessions) {
+    private List<AttendeeEntity> getAttendees(List<PracticeSessionEntity> practiceSessions) {
         return practiceSessions.stream()
-                .map(PracticeSession::getPracticeSessionAttendees)
+                .map(PracticeSessionEntity::getPracticeSessionAttendees)
                 .flatMap(Collection::stream)
-                .map(PracticeSessionAttendee::getAttendee)
+                .map(PracticeSessionAttendeeEntity::getAttendee)
                 .toList();
     }
 
@@ -54,9 +54,9 @@ class PracticeSessionRepositoryIntegTest extends MySQLContainerTest {
     @Transactional
     @Test
     void shouldFindUpcomingPracticeSessions() {
-        List<PracticeSession> practiceSessions = practiceSessionRepository.findByDateLaterThan(DATE);
+        List<PracticeSessionEntity> practiceSessionEntities = practiceSessionRepository.findByDateLaterThan(DATE);
 
-        assertThat(practiceSessions).isNotNull()
+        assertThat(practiceSessionEntities).isNotNull()
                 .hasSize(1)
                 .extracting("title", "description", "date", "speaker.firstname", "speaker.lastname")
                 .containsExactlyInAnyOrder(
@@ -65,7 +65,7 @@ class PracticeSessionRepositoryIntegTest extends MySQLContainerTest {
                                 LocalDateTime.of(2023, 4, 11, 19, 0, 0),
                                 "kevin", "llps"));
 
-        assertThat(practiceSessions.get(0).getPracticeSessionAttendees()).isNotNull()
+        assertThat(practiceSessionEntities.get(0).getPracticeSessionAttendees()).isNotNull()
                 .hasSize(2)
                 .extracting("attendee.firstname", "attendee.lastname")
                 .containsExactlyInAnyOrder(
@@ -76,9 +76,9 @@ class PracticeSessionRepositoryIntegTest extends MySQLContainerTest {
     @Transactional
     @Test
     void shouldFindAllOrderedByDate() {
-        List<PracticeSession> practiceSessions = practiceSessionRepository.findAllOrderedByDate();
+        List<PracticeSessionEntity> practiceSessionEntities = practiceSessionRepository.findAllOrderedByDate();
 
-        assertThat(practiceSessions).isNotNull()
+        assertThat(practiceSessionEntities).isNotNull()
                 .hasSize(2)
                 .extracting("title", "description", "date", "speaker.firstname", "speaker.lastname")
                 .containsExactlyInAnyOrder(
@@ -91,14 +91,14 @@ class PracticeSessionRepositoryIntegTest extends MySQLContainerTest {
                                 LocalDateTime.of(2022, 9, 20, 14, 30, 0),
                                 "chris", "arr"));
 
-        assertThat(practiceSessions.get(0).getPracticeSessionAttendees()).isNotNull()
+        assertThat(practiceSessionEntities.get(0).getPracticeSessionAttendees()).isNotNull()
                 .hasSize(2)
                 .extracting("attendee.firstname", "attendee.lastname")
                 .containsExactlyInAnyOrder(
                         tuple("jean", "dupont"),
                         tuple("alex", "dubois"));
 
-        assertThat(practiceSessions.get(1).getPracticeSessionAttendees()).isNotNull()
+        assertThat(practiceSessionEntities.get(1).getPracticeSessionAttendees()).isNotNull()
                 .hasSize(2)
                 .extracting("attendee.firstname", "attendee.lastname")
                 .containsExactlyInAnyOrder(

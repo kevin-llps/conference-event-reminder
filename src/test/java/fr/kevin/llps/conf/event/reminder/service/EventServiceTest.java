@@ -3,13 +3,16 @@ package fr.kevin.llps.conf.event.reminder.service;
 import fr.kevin.llps.conf.event.reminder.api.rest.dto.BBLDto;
 import fr.kevin.llps.conf.event.reminder.api.rest.dto.EventDto;
 import fr.kevin.llps.conf.event.reminder.api.rest.dto.PracticeSessionDto;
-import fr.kevin.llps.conf.event.reminder.api.rest.mapper.BBLMapper;
-import fr.kevin.llps.conf.event.reminder.api.rest.mapper.PracticeSessionMapper;
-import fr.kevin.llps.conf.event.reminder.api.rest.mapper.TalkMapper;
 import fr.kevin.llps.conf.event.reminder.csv.CsvEvent;
 import fr.kevin.llps.conf.event.reminder.domain.BBL;
 import fr.kevin.llps.conf.event.reminder.domain.PracticeSession;
 import fr.kevin.llps.conf.event.reminder.domain.Talk;
+import fr.kevin.llps.conf.event.reminder.entities.BBLEntity;
+import fr.kevin.llps.conf.event.reminder.entities.PracticeSessionEntity;
+import fr.kevin.llps.conf.event.reminder.entities.TalkEntity;
+import fr.kevin.llps.conf.event.reminder.mapper.BBLMapper;
+import fr.kevin.llps.conf.event.reminder.mapper.PracticeSessionMapper;
+import fr.kevin.llps.conf.event.reminder.mapper.TalkMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -28,11 +31,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static fr.kevin.llps.conf.event.reminder.samples.BBLDtoSample.oneBBLDto;
+import static fr.kevin.llps.conf.event.reminder.samples.BBLEntitySample.oneBBLEntity;
 import static fr.kevin.llps.conf.event.reminder.samples.BBLSample.oneBBL;
-import static fr.kevin.llps.conf.event.reminder.samples.CsvEventSample.csvEventList;
+import static fr.kevin.llps.conf.event.reminder.samples.CsvEventSample.*;
 import static fr.kevin.llps.conf.event.reminder.samples.PracticeSessionDtoSample.onePracticeSessionDto;
+import static fr.kevin.llps.conf.event.reminder.samples.PracticeSessionEntitySample.onePracticeSessionEntity;
 import static fr.kevin.llps.conf.event.reminder.samples.PracticeSessionSample.onePracticeSession;
 import static fr.kevin.llps.conf.event.reminder.samples.TalkDtoSample.talkDtoList;
+import static fr.kevin.llps.conf.event.reminder.samples.TalkEntitySample.talkEntities;
 import static fr.kevin.llps.conf.event.reminder.samples.TalkSample.talkList;
 import static fr.kevin.llps.conf.event.reminder.utils.TestUtils.readResource;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -64,26 +70,38 @@ class EventServiceTest {
     private EventService eventService;
 
     @Captor
-    private ArgumentCaptor<List<Talk>> talkListCaptor;
+    private ArgumentCaptor<List<TalkEntity>> talkListCaptor;
 
     @Captor
-    private ArgumentCaptor<List<BBL>> bblListCaptor;
+    private ArgumentCaptor<List<BBLEntity>> bblListCaptor;
 
     @Captor
-    private ArgumentCaptor<List<PracticeSession>> practiceSessionListCaptor;
+    private ArgumentCaptor<List<PracticeSessionEntity>> practiceSessionListCaptor;
 
     @Test
     void shouldImportEvents() {
         List<CsvEvent> csvEvents = new ArrayList<>(csvEventList());
+
+        List<Talk> talkList = talkList();
+        BBL bbl = oneBBL();
+        PracticeSession practiceSession = onePracticeSession();
+
+        when(talkMapper.mapCsvEventsToTalks(csvTalkEvents())).thenReturn(talkList);
+        when(bblMapper.mapCsvEventsToBBLs(List.of(csvBBLEvent()))).thenReturn(List.of(bbl));
+        when(practiceSessionMapper.mapCsvEventsToPracticeSessions(List.of(csvPracticeSessionEvent()))).thenReturn(List.of(practiceSession));
+
+        when(talkMapper.mapToEntities(talkList)).thenReturn(talkEntities());
+        when(bblMapper.mapToEntities(List.of(oneBBL()))).thenReturn(List.of(oneBBLEntity()));
+        when(practiceSessionMapper.mapToEntities(List.of(onePracticeSession()))).thenReturn(List.of(onePracticeSessionEntity()));
 
         eventService.importEvents(csvEvents);
 
         verify(talkService).importTalks(talkListCaptor.capture());
         verify(bblService).importBBLs(bblListCaptor.capture());
         verify(practiceSessionService).importPracticeSessions(practiceSessionListCaptor.capture());
-        verifyNoMoreInteractions(talkService, bblService, practiceSessionService);
+        verifyNoMoreInteractions(talkMapper, bblMapper, practiceSessionMapper, talkService, bblService, practiceSessionService);
 
-        List<Talk> talks = talkListCaptor.getValue();
+        List<TalkEntity> talks = talkListCaptor.getValue();
 
         assertThat(talks).isNotNull()
                 .hasSize(5)
@@ -110,7 +128,7 @@ class EventServiceTest {
                                 LocalDateTime.of(2023, 2, 9, 19, 0, 0),
                                 "kevin", "llps"));
 
-        List<BBL> bblList = bblListCaptor.getValue();
+        List<BBLEntity> bblList = bblListCaptor.getValue();
 
         assertThat(bblList).isNotNull()
                 .hasSize(1)
@@ -122,7 +140,7 @@ class EventServiceTest {
                                 "chris", "arr",
                                 "MadMax Corp"));
 
-        List<PracticeSession> practiceSessions = practiceSessionListCaptor.getValue();
+        List<PracticeSessionEntity> practiceSessions = practiceSessionListCaptor.getValue();
 
         assertThat(practiceSessions).isNotNull()
                 .hasSize(1)

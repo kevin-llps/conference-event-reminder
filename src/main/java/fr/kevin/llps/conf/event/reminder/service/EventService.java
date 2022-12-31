@@ -1,12 +1,12 @@
 package fr.kevin.llps.conf.event.reminder.service;
 
 import fr.kevin.llps.conf.event.reminder.api.rest.dto.EventDto;
-import fr.kevin.llps.conf.event.reminder.api.rest.mapper.BBLMapper;
-import fr.kevin.llps.conf.event.reminder.api.rest.mapper.PracticeSessionMapper;
-import fr.kevin.llps.conf.event.reminder.api.rest.mapper.TalkMapper;
 import fr.kevin.llps.conf.event.reminder.csv.CsvEvent;
 import fr.kevin.llps.conf.event.reminder.domain.*;
 import fr.kevin.llps.conf.event.reminder.exception.EventExportException;
+import fr.kevin.llps.conf.event.reminder.mapper.BBLMapper;
+import fr.kevin.llps.conf.event.reminder.mapper.PracticeSessionMapper;
+import fr.kevin.llps.conf.event.reminder.mapper.TalkMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
@@ -17,8 +17,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static fr.kevin.llps.conf.event.reminder.csv.CsvProperties.DELIMITER;
 import static fr.kevin.llps.conf.event.reminder.csv.CsvProperties.HEADERS;
@@ -41,32 +44,18 @@ public class EventService {
         List<CsvEvent> csvBBLs = filterByEventType(csvEvents, EventType.BBL);
         List<CsvEvent> csvPracticeSessions = filterByEventType(csvEvents, EventType.PRACTICE_SESSION);
 
-        talkService.importTalks(mapToTalks(csvTalks));
-        bblService.importBBLs(mapToBBLs(csvBBLs));
-        practiceSessionService.importPracticeSessions(mapToPracticeSessions(csvPracticeSessions));
+        List<Talk> talks = talkMapper.mapCsvEventsToTalks(csvTalks);
+        List<BBL> bblList = bblMapper.mapCsvEventsToBBLs(csvBBLs);
+        List<PracticeSession> practiceSessions = practiceSessionMapper.mapCsvEventsToPracticeSessions(csvPracticeSessions);
+
+        talkService.importTalks(talkMapper.mapToEntities(talks));
+        bblService.importBBLs(bblMapper.mapToEntities(bblList));
+        practiceSessionService.importPracticeSessions(practiceSessionMapper.mapToEntities(practiceSessions));
     }
 
     private List<CsvEvent> filterByEventType(List<CsvEvent> csvEvents, String eventType) {
         return csvEvents.stream()
                 .filter(csvEvent -> csvEvent.type().equals(eventType))
-                .toList();
-    }
-
-    private List<Talk> mapToTalks(List<CsvEvent> csvTalks) {
-        return csvTalks.stream()
-                .map(Talk::create)
-                .toList();
-    }
-
-    private List<BBL> mapToBBLs(List<CsvEvent> csvBBLs) {
-        return csvBBLs.stream()
-                .map(BBL::create)
-                .toList();
-    }
-
-    private List<PracticeSession> mapToPracticeSessions(List<CsvEvent> csvPracticeSessions) {
-        return csvPracticeSessions.stream()
-                .map(PracticeSession::create)
                 .toList();
     }
 
@@ -93,7 +82,7 @@ public class EventService {
         List<Event> events = getAllEvents();
 
         List<String[]> csvColumns = events.stream()
-                .map(Event::getCsvColumns)
+                .map(this::getCsvColumns)
                 .toList();
 
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -118,6 +107,56 @@ public class EventService {
         events.addAll(practiceSessionService.getAll());
 
         return events;
+    }
+
+    private String[] getCsvColumns(Event event) {
+        return switch (event) {
+            case Talk(String title,String description,LocalDateTime date,Speaker speaker) -> getTalkCsvColumns(title, description, date, speaker);
+            case BBL(String title,String description,LocalDateTime date,Speaker speaker,String company) -> getBBLCsvColumns(title, description, date, speaker, company);
+            case PracticeSession(String title,String description,LocalDateTime date,Speaker speaker,List<Attendee> attendees) -> getPracticeSessionCsvColumns(title, description, date, speaker, attendees);
+        };
+    }
+
+    private String[] getTalkCsvColumns(String title, String description, LocalDateTime date, Speaker speaker) {
+        return new String[]{
+                title,
+                EventType.TALK,
+                description,
+                date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                date.format(DateTimeFormatter.ofPattern("HH:mm:ss")),
+                String.format("%s %s", speaker.firstname(), speaker.lastname()),
+                "", ""};
+    }
+
+    private String[] getBBLCsvColumns(String title, String description, LocalDateTime date, Speaker speaker, String company) {
+        return new String[]{
+                title,
+                EventType.BBL,
+                description,
+                date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                date.format(DateTimeFormatter.ofPattern("HH:mm:ss")),
+                String.format("%s %s", speaker.firstname(), speaker.lastname()),
+                "",
+                company};
+    }
+
+    private String[] getPracticeSessionCsvColumns(String title, String description, LocalDateTime date, Speaker speaker, List<Attendee> attendees) {
+        return new String[]{
+                title,
+                EventType.PRACTICE_SESSION,
+                description,
+                date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                date.format(DateTimeFormatter.ofPattern("HH:mm:ss")),
+                String.format("%s %s", speaker.firstname(), speaker.lastname()),
+                getAttendeesCsvColumn(attendees),
+                ""};
+    }
+
+    private String getAttendeesCsvColumn(List<Attendee> attendees) {
+        return attendees.stream()
+                .map(attendee -> String.format("%s %s", attendee.firstname(), attendee.lastname()))
+                .sorted()
+                .collect(Collectors.joining(","));
     }
 
 }

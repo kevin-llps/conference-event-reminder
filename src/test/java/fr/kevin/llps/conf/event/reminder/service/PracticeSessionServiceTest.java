@@ -1,7 +1,9 @@
 package fr.kevin.llps.conf.event.reminder.service;
 
-import fr.kevin.llps.conf.event.reminder.domain.Attendee;
 import fr.kevin.llps.conf.event.reminder.domain.PracticeSession;
+import fr.kevin.llps.conf.event.reminder.entities.AttendeeEntity;
+import fr.kevin.llps.conf.event.reminder.entities.PracticeSessionEntity;
+import fr.kevin.llps.conf.event.reminder.mapper.PracticeSessionMapper;
 import fr.kevin.llps.conf.event.reminder.repository.AttendeeRepository;
 import fr.kevin.llps.conf.event.reminder.repository.PracticeSessionRepository;
 import fr.kevin.llps.conf.event.reminder.utils.DateUtils;
@@ -13,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
+import static fr.kevin.llps.conf.event.reminder.samples.PracticeSessionEntitySample.practiceSessionEntities;
 import static fr.kevin.llps.conf.event.reminder.samples.PracticeSessionSample.practiceSessionList;
 import static fr.kevin.llps.conf.event.reminder.utils.TestUtils.DATE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,50 +33,57 @@ class PracticeSessionServiceTest {
     @Mock
     private DateUtils dateUtils;
 
+    @Mock
+    private PracticeSessionMapper practiceSessionMapper;
+
     @InjectMocks
     private PracticeSessionService practiceSessionService;
 
     @Test
     void shouldImportPracticeSessions() {
-        List<PracticeSession> practiceSessions = practiceSessionList();
-        List<Attendee> attendees = List.of(
-                new Attendee("julien", "arnaud"),
-                new Attendee("mickael", "dupont"),
-                new Attendee("jean", "dupont"),
-                new Attendee("alex", "dubois"));
+        List<PracticeSessionEntity> practiceSessionEntities = practiceSessionEntities();
+        List<AttendeeEntity> attendees = List.of(
+                new AttendeeEntity("julien", "arnaud"),
+                new AttendeeEntity("mickael", "dupont"),
+                new AttendeeEntity("jean", "dupont"),
+                new AttendeeEntity("alex", "dubois"));
 
-        practiceSessionService.importPracticeSessions(practiceSessions);
+        practiceSessionService.importPracticeSessions(practiceSessionEntities);
 
         verify(attendeeRepository).saveAll(attendees);
-        verify(practiceSessionRepository).saveAll(practiceSessions);
+        verify(practiceSessionRepository).saveAll(practiceSessionEntities);
         verifyNoMoreInteractions(practiceSessionRepository);
     }
 
     @Test
     void shouldGetUpcomingPracticeSessions() {
+        List<PracticeSessionEntity> practiceSessionEntities = practiceSessionEntities();
         List<PracticeSession> expectedPracticeSessions = practiceSessionList();
 
         when(dateUtils.getCurrentDate()).thenReturn(DATE);
-        when(practiceSessionRepository.findByDateLaterThan(DATE)).thenReturn(expectedPracticeSessions);
+        when(practiceSessionRepository.findByDateLaterThan(DATE)).thenReturn(practiceSessionEntities);
+        when(practiceSessionMapper.mapToPracticeSessions(practiceSessionEntities)).thenReturn(expectedPracticeSessions);
 
         List<PracticeSession> upcomingPracticeSessions = practiceSessionService.getUpcomingPracticeSessions();
 
         assertThat(upcomingPracticeSessions).containsExactlyInAnyOrderElementsOf(expectedPracticeSessions);
 
-        verifyNoMoreInteractions(dateUtils, practiceSessionRepository);
+        verifyNoMoreInteractions(dateUtils, practiceSessionRepository, practiceSessionMapper);
     }
 
     @Test
     void shouldGetAll() {
+        List<PracticeSessionEntity> practiceSessionEntities = practiceSessionEntities();
         List<PracticeSession> expectedPracticeSessions = practiceSessionList();
 
-        when(practiceSessionRepository.findAllOrderedByDate()).thenReturn(expectedPracticeSessions);
+        when(practiceSessionRepository.findAllOrderedByDate()).thenReturn(practiceSessionEntities);
+        when(practiceSessionMapper.mapToPracticeSessions(practiceSessionEntities)).thenReturn(expectedPracticeSessions);
 
         List<PracticeSession> practiceSessions = practiceSessionService.getAll();
 
         assertThat(practiceSessions).containsExactlyInAnyOrderElementsOf(expectedPracticeSessions);
 
-        verifyNoMoreInteractions(practiceSessionRepository);
+        verifyNoMoreInteractions(practiceSessionRepository, practiceSessionMapper);
     }
 
 }

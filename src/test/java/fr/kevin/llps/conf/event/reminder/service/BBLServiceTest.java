@@ -1,6 +1,8 @@
 package fr.kevin.llps.conf.event.reminder.service;
 
 import fr.kevin.llps.conf.event.reminder.domain.BBL;
+import fr.kevin.llps.conf.event.reminder.entities.BBLEntity;
+import fr.kevin.llps.conf.event.reminder.mapper.BBLMapper;
 import fr.kevin.llps.conf.event.reminder.repository.BBLRepository;
 import fr.kevin.llps.conf.event.reminder.utils.DateUtils;
 import org.junit.jupiter.api.Test;
@@ -11,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
+import static fr.kevin.llps.conf.event.reminder.samples.BBLEntitySample.bblEntities;
 import static fr.kevin.llps.conf.event.reminder.samples.BBLSample.bblList;
 import static fr.kevin.llps.conf.event.reminder.utils.TestUtils.DATE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,44 +28,51 @@ class BBLServiceTest {
     @Mock
     private DateUtils dateUtils;
 
+    @Mock
+    private BBLMapper bblMapper;
+
     @InjectMocks
     private BBLService bblService;
 
     @Test
     void shouldImportBBLs() {
-        List<BBL> bblList = bblList();
+        List<BBLEntity> bblEntities = bblEntities();
 
-        bblService.importBBLs(bblList);
+        bblService.importBBLs(bblEntities);
 
-        verify(bblRepository).saveAll(bblList);
+        verify(bblRepository).saveAll(bblEntities);
         verifyNoMoreInteractions(bblRepository);
     }
 
     @Test
     void shouldGetUpcomingBBLs() {
+        List<BBLEntity> bblEntities = bblEntities();
         List<BBL> expectedBBLs = bblList();
 
         when(dateUtils.getCurrentDate()).thenReturn(DATE);
-        when(bblRepository.findByDateLaterThan(DATE)).thenReturn(expectedBBLs);
+        when(bblRepository.findByDateLaterThan(DATE)).thenReturn(bblEntities);
+        when(bblMapper.mapToBBLs(bblEntities)).thenReturn(expectedBBLs);
 
         List<BBL> upcomingBBLs = bblService.getUpcomingBBLs();
 
         assertThat(upcomingBBLs).containsExactlyInAnyOrderElementsOf(expectedBBLs);
 
-        verifyNoMoreInteractions(dateUtils, bblRepository);
+        verifyNoMoreInteractions(dateUtils, bblRepository, bblMapper);
     }
 
     @Test
     void shouldGetAll() {
+        List<BBLEntity> bblEntities = bblEntities();
         List<BBL> expectedBBLs = bblList();
 
-        when(bblRepository.findAllOrderedByDate()).thenReturn(expectedBBLs);
+        when(bblRepository.findAllOrderedByDate()).thenReturn(bblEntities);
+        when(bblMapper.mapToBBLs(bblEntities)).thenReturn(expectedBBLs);
 
         List<BBL> bblList = bblService.getAll();
 
         assertThat(bblList).containsExactlyInAnyOrderElementsOf(expectedBBLs);
 
-        verifyNoMoreInteractions(bblRepository);
+        verifyNoMoreInteractions(bblRepository, bblMapper);
     }
 
 }

@@ -16,11 +16,12 @@
     <name>conference-event-reminder</name>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>19</java.version>
         <liquibase.version>4.18.0</liquibase.version>
         <lombok.version>1.18.24</lombok.version>
         <testcontainers.version>1.17.6</testcontainers.version>
         <spring-boot-maven-plugin.version>2.7.4</spring-boot-maven-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
     </properties>
 
     <dependencies>
@@ -95,6 +96,19 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                    <compilerArgs>
+                        <arg>--enable-preview</arg>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <argLine>--enable-preview</argLine>
                 </configuration>
             </plugin>
 
