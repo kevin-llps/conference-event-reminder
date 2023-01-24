@@ -2,9 +2,8 @@ package fr.kevin.llps.conf.event.reminder.domain;
 
 import fr.kevin.llps.conf.event.reminder.csv.CsvEvent;
 import fr.kevin.llps.conf.event.reminder.utils.DateUtils;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,9 +16,8 @@ import java.util.stream.Collectors;
 import static fr.kevin.llps.conf.event.reminder.domain.EventType.PRACTICE_SESSION;
 import static javax.persistence.CascadeType.ALL;
 
+@Data
 @NoArgsConstructor
-@Getter
-@Setter
 @Entity
 @Table(name = "practice_session")
 public class PracticeSession implements Event {
