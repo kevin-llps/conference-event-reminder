@@ -5,6 +5,7 @@ import fr.kevin.llps.conf.event.reminder.domain.PracticeSession;
 import fr.kevin.llps.conf.event.reminder.domain.Speaker;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PracticeSessionSample {
@@ -29,12 +30,16 @@ public class PracticeSessionSample {
         Attendee firstJeeAttendee = new Attendee("julien", "arnaud");
         Attendee secondJeeAttendee = new Attendee("mickael", "dupont");
 
+        List<Attendee> attendees = new ArrayList<>();
+        attendees.add(firstJeeAttendee);
+        attendees.add(secondJeeAttendee);
+
         return new PracticeSession(
                 "JEE",
                 "Session pratique JEE",
                 LocalDateTime.of(2023, 4, 11, 19, 0, 0),
                 new Speaker("kevin", "llps"),
-                List.of(firstJeeAttendee, secondJeeAttendee));
+                attendees);
     }
 
 }
