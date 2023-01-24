@@ -3,12 +3,12 @@ package fr.kevin.llps.conf.event.reminder.entities;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static javax.persistence.CascadeType.ALL;
+import static jakarta.persistence.CascadeType.ALL;
 
 @Data
 @NoArgsConstructor
@@ -37,7 +37,7 @@ public class PracticeSessionEntity {
     @Column(name = "date", nullable = false)
     private LocalDateTime date;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = ALL)
     @JoinColumn(name = "speaker_id")
     private SpeakerEntity speaker;
 

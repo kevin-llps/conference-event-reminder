@@ -5,12 +5,13 @@ import fr.kevin.llps.conf.event.reminder.utils.DateUtils;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import static fr.kevin.llps.conf.event.reminder.domain.EventType.TALK;
+import static jakarta.persistence.CascadeType.ALL;
 
 @Data
 @NoArgsConstructor
@@ -47,7 +48,7 @@ public class Talk implements Event {
     @Column(name = "date", nullable = false)
     private LocalDateTime date;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = ALL)
     @JoinColumn(name = "speaker_id")
     private Speaker speaker;
 

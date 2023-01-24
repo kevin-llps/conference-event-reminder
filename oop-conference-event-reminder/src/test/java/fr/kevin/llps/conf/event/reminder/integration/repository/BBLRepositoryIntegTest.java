@@ -7,6 +7,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,6 +32,7 @@ class BBLRepositoryIntegTest extends MySQLContainerTest {
         bblRepository.deleteAll();
     }
 
+    @Transactional
     @Test
     void shouldFindUpcomingBBLs() {
         List<BBL> bblList = bblRepository.findByDateLaterThan(DATE);
@@ -46,6 +48,7 @@ class BBLRepositoryIntegTest extends MySQLContainerTest {
                                 "Rockstar Corp"));
     }
 
+    @Transactional
     @Test
     void shouldFindAllOrderedByDate() {
         List<BBL> bblList = bblRepository.findAllOrderedByDate();

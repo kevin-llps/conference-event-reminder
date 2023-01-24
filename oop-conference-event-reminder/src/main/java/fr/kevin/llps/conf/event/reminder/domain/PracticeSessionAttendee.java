@@ -3,7 +3,7 @@ package fr.kevin.llps.conf.event.reminder.domain;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.UUID;
 
 @Data
