@@ -20,7 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -213,9 +212,9 @@ class EventServiceTest {
         when(bblService.getAll()).thenReturn(List.of(oneBBL()));
         when(practiceSessionService.getAll()).thenReturn(List.of(onePracticeSession()));
 
-        ByteArrayInputStream byteArrayInputStream = eventService.exportEvents();
+        byte[] bytes = eventService.exportEvents();
 
-        String exportedEvents = new String(byteArrayInputStream.readAllBytes(), StandardCharsets.UTF_8);
+        String exportedEvents = new String(bytes, StandardCharsets.UTF_8);
 
         assertThat(exportedEvents).isEqualToIgnoringNewLines(readResource(resource));
     }

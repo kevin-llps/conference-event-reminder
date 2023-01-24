@@ -14,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,8 +69,7 @@ class EventControllerTest {
 
     @Test
     void shouldGetUpcomingEvents() throws Exception {
-        List<EventDto> eventDtoList = new ArrayList<>();
-        eventDtoList.addAll(talkDtoList());
+        List<EventDto> eventDtoList = new ArrayList<>(talkDtoList());
         eventDtoList.add(oneBBLDto());
         eventDtoList.add(onePracticeSessionDto());
 
@@ -87,9 +85,9 @@ class EventControllerTest {
 
     @Test
     void shouldExportEvents() throws Exception {
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(events.getInputStream().readAllBytes());
+        byte[] bytes = events.getInputStream().readAllBytes();
 
-        when(eventService.exportEvents()).thenReturn(byteArrayInputStream);
+        when(eventService.exportEvents()).thenReturn(bytes);
 
         mockMvc.perform(get("/events/export"))
                 .andExpect(status().isOk())
