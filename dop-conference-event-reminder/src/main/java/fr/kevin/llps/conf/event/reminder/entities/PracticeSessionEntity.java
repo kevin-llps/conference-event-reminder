@@ -1,8 +1,7 @@
 package fr.kevin.llps.conf.event.reminder.entities;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,9 +10,8 @@ import java.util.UUID;
 
 import static javax.persistence.CascadeType.ALL;
 
+@Data
 @NoArgsConstructor
-@Getter
-@Setter
 @Entity
 @Table(name = "practice_session")
 public class PracticeSessionEntity {

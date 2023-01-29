@@ -1,18 +1,14 @@
 package fr.kevin.llps.conf.event.reminder.entities;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@EqualsAndHashCode
+@Data
 @NoArgsConstructor
-@Getter
-@Setter
 @Entity
 @Table(name = "talk")
 public class TalkEntity {

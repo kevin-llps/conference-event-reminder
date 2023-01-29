@@ -1,16 +1,14 @@
 package fr.kevin.llps.conf.event.reminder.entities;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Data
 @NoArgsConstructor
-@Getter
-@Setter
 @Entity
 @Table(name = "bbl")
 public class BBLEntity {
