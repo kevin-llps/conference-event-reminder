@@ -13,7 +13,6 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -84,7 +83,7 @@ public class EventService {
         return eventDtoList;
     }
 
-    public ByteArrayInputStream exportEvents() {
+    public byte[] exportEvents() {
         CSVFormat csvFormat = CSVFormat.newFormat(DELIMITER).builder()
                 .setHeader(HEADERS)
                 .setRecordSeparator(LF)
@@ -103,7 +102,7 @@ public class EventService {
 
             csvPrinter.flush();
 
-            return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+            return byteArrayOutputStream.toByteArray();
         } catch (IOException e) {
             log.error("Une erreur est survenue lors de l'export", e);
             throw new EventExportException(e);
