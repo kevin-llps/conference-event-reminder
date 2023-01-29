@@ -17,7 +17,7 @@
         <liquibase.version>4.18.0</liquibase.version>
         <lombok.version>1.18.24</lombok.version>
         <testcontainers.version>1.17.6</testcontainers.version>
-        <spring-boot-maven-plugin.version>2.7.4</spring-boot-maven-plugin.version>
+        <spring-boot-maven-plugin.version>3.0.2</spring-boot-maven-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
         <commons-csv.version>1.9.0</commons-csv.version>
     </properties>

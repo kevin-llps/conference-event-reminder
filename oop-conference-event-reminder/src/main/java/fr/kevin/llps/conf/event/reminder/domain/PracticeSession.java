@@ -5,7 +5,7 @@ import fr.kevin.llps.conf.event.reminder.utils.DateUtils;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -14,7 +14,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static fr.kevin.llps.conf.event.reminder.domain.EventType.PRACTICE_SESSION;
-import static javax.persistence.CascadeType.ALL;
+import static jakarta.persistence.CascadeType.ALL;
 
 @Data
 @NoArgsConstructor
@@ -64,7 +64,7 @@ public class PracticeSession implements Event {
     @Column(name = "date", nullable = false)
     private LocalDateTime date;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = ALL)
     @JoinColumn(name = "speaker_id")
     private Speaker speaker;
 
