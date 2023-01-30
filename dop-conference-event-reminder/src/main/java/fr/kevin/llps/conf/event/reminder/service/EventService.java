@@ -108,9 +108,12 @@ public class EventService {
 
     private String[] getCsvColumns(Event event) {
         return switch (event) {
-            case Talk(String title,String description,LocalDateTime date,Speaker speaker) -> getTalkCsvColumns(title, description, date, speaker);
-            case BBL(String title,String description,LocalDateTime date,Speaker speaker,String company) -> getBBLCsvColumns(title, description, date, speaker, company);
-            case PracticeSession(String title,String description,LocalDateTime date,Speaker speaker,List<Attendee> attendees) -> getPracticeSessionCsvColumns(title, description, date, speaker, attendees);
+            case Talk(String title,String description,LocalDateTime date,Speaker speaker)
+                    -> getTalkCsvColumns(title, description, date, speaker);
+            case BBL(String title,String description,LocalDateTime date,Speaker speaker,String company)
+                    -> getBBLCsvColumns(title, description, date, speaker, company);
+            case PracticeSession(String title,String description,LocalDateTime date,Speaker speaker,List<Attendee> attendees)
+                    -> getPracticeSessionCsvColumns(title, description, date, speaker, attendees);
         };
     }
 
