@@ -15,10 +15,11 @@
     <properties>
         <java.version>17</java.version>
         <liquibase.version>4.18.0</liquibase.version>
-        <lombok.version>1.18.24</lombok.version>
+        <lombok.version>1.18.30</lombok.version>
         <testcontainers.version>1.17.6</testcontainers.version>
-        <spring-boot-maven-plugin.version>3.0.2</spring-boot-maven-plugin.version>
+        <spring-boot-maven-plugin.version>3.1.4</spring-boot-maven-plugin.version>
         <commons-csv.version>1.9.0</commons-csv.version>
+        <mysql-connector-java.version>8.0.33</mysql-connector-java.version>
     </properties>
 
     <dependencies>
@@ -61,6 +62,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql-connector-java.version}</version>
             <scope>runtime</scope>
         </dependency>
 
