@@ -16,7 +16,7 @@ public abstract class MySQLContainerTest {
     private static final MySQLContainer<?> MYSQL_CONTAINER;
 
     static {
-        MYSQL_CONTAINER = new MySQLContainer<>(DockerImageName.parse("mysql:5.6"))
+        MYSQL_CONTAINER = new MySQLContainer<>(DockerImageName.parse("mysql:8.0"))
                 .withDatabaseName("event");
         MYSQL_CONTAINER.start();
     }
